@@ -37,9 +37,7 @@ $ npm i -S @tadashi/mask
 ```
 
 ```js
-// app.js
-
-import Mask from '@tadashi/mask'
+import Mask from './node_modules/@tadashi/mask/src/index.js'
 
 const el = document.getElementById(id)
 const mask = new Mask(el)
