@@ -7,7 +7,7 @@ export default {
 	output: {
 		file: 'dist/index.js',
 		format: 'umd',
-		name: 'mask',
+		name: 'Mask',
 		sourcemap: true,
 		strict: true
 	},
