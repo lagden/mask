@@ -72,9 +72,7 @@ class Mask {
 		const id = this.input.GUID
 		if (instances.has(id)) {
 			instances.delete(id)
-			if (Reflect.has(this, 'GUID')) {
-				Reflect.deleteProperty(this, 'GUID')
-			}
+			Reflect.deleteProperty(this, 'GUID')
 		}
 	}
 
