@@ -21,7 +21,7 @@ test('throws', t => {
 	t.is(error.message, 'The input should be a HTMLInputElement')
 })
 
-test('inpput', t => {
+test('input', t => {
 	const input = document.querySelector('#telefone')
 	const mask = new Mask(input)
 	for (const char of '11968Z7'.split('')) {
@@ -30,4 +30,11 @@ test('inpput', t => {
 	}
 	t.is(input.value, '(11) 9-687')
 	mask.destroy()
+})
+
+test('instance', t => {
+	const input = document.querySelector('#telefone')
+	const mask = new Mask(input)
+	const _mask = Mask.data(input)
+	t.true(mask === _mask)
 })

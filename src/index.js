@@ -1,16 +1,37 @@
 'use strict'
 
 const map = new Map()
-map.set('9', /[0-9]/)
+map.set('9', /[\d]/)
 map.set('A', /[0-9a-zA-Z]/)
 map.set('S', /[a-zA-Z]/)
 
+const instances = new Map()
+let GUID = 0
+
 class Mask {
+	static data(input) {
+		const id = input && input.GUID
+		return instances.has(id) && instances.get(id)
+	}
+
 	constructor(input, mask = false) {
 		if (input instanceof HTMLInputElement === false) {
 			throw new TypeError('The input should be a HTMLInputElement')
 		}
+
+		// Check if element was initialized and return your instance
+		const initialized = Mask.data(input)
+		if (initialized instanceof Mask) {
+			return initialized
+		}
+
 		this.input = input
+
+		// Storage current instance
+		const id = ++GUID
+		this.input.GUID = id
+		instances.set(id, this)
+
 		this.mask = input.dataset.mask || mask
 		this.maskArr = this.mask.split('')
 		this.event = 'input'
