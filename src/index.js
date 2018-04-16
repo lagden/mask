@@ -69,6 +69,13 @@ class Mask {
 
 	destroy() {
 		this.input.removeEventListener(this.event, this)
+		const id = this.input.GUID
+		if (instances.has(id)) {
+			instances.delete(id)
+			if (Reflect.has(this, 'GUID')) {
+				Reflect.deleteProperty(this, 'GUID')
+			}
+		}
 	}
 
 	handleEvent(event) {

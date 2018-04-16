@@ -32,9 +32,10 @@ test('input', t => {
 	mask.destroy()
 })
 
-test('instance', t => {
+test('instance and destroy', t => {
 	const input = document.querySelector('#telefone')
 	const mask = new Mask(input)
 	const _mask = Mask.data(input)
 	t.true(mask === _mask)
+	mask.destroy()
 })
