@@ -3,7 +3,7 @@
 import buble from 'rollup-plugin-buble'
 
 export default {
-	input: 'src/index.js',
+	input: 'src/index.mjs',
 	output: {
 		file: 'dist/index.js',
 		format: 'umd',
@@ -11,7 +11,5 @@ export default {
 		sourcemap: true,
 		strict: true
 	},
-	plugins: [
-		buble()
-	]
+	plugins: [buble()]
 }

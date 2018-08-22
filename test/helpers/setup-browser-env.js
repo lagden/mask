@@ -9,7 +9,7 @@ const html = [
 ].join('')
 
 const {window} = new JSDOM(html)
-const document = window.document
+const {document} = window
 
 global.document = document
 global.window = window
