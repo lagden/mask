@@ -73,6 +73,7 @@ class Mask {
 		if (event && event.inputType === 'deleteContentBackward') {
 			return false
 		}
+
 		this.input.value = Mask.masking(this.input.value, this.mask)
 	}
 

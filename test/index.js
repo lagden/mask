@@ -5,7 +5,7 @@
 
 import test from 'ava'
 import simulant from 'simulant'
-import Mask from '../src/index.mjs'
+import Mask from '../src'
 
 test('mask', t => {
 	const input = document.querySelector('#placa')
@@ -35,6 +35,7 @@ test('input', t => {
 		input.value += char
 		simulant.fire(input, 'input')
 	}
+
 	// simulant.fire(input, 'input', {inputType: 'deleteContentBackward'})
 	t.is(input.value, '(11) 9-687')
 	mask.destroy()
