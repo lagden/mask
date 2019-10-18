@@ -41,6 +41,20 @@ test('input', t => {
 	mask.destroy()
 })
 
+test('keyup', t => {
+	const input = document.querySelector('#telefone')
+	input.value = ''
+	const mask = new Mask(input, null, 'keyup')
+	for (const char of '11968Z7'.split('')) {
+		input.value += char
+		simulant.fire(input, 'keyup')
+	}
+
+	// simulant.fire(input, 'input', {inputType: 'deleteContentBackward'})
+	t.is(input.value, '(11) 9-687')
+	mask.destroy()
+})
+
 test('instance and destroy', t => {
 	const input = document.querySelector('#telefone')
 	const mask = new Mask(input)

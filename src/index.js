@@ -40,7 +40,7 @@ class Mask {
 		return res.join('')
 	}
 
-	constructor(input, mask = '') {
+	constructor(input, mask = '', keyEvent = 'input') {
 		if (input instanceof HTMLInputElement === false) {
 			throw new TypeError('The input should be a HTMLInputElement')
 		}
@@ -60,7 +60,7 @@ class Mask {
 		}
 
 		// Listener
-		this[EVENT] = 'input'
+		this[EVENT] = keyEvent
 		this.input.addEventListener(this[EVENT], this)
 
 		// Storage instance

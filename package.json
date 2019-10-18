@@ -1,6 +1,6 @@
 {
   "name": "@tadashi/mask",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "The simple and tiny script for input mask",
   "keywords": [
     "mask",
@@ -22,7 +22,7 @@
   "scripts": {
     "report": "nyc report --reporter=text-lcov | coveralls",
     "pretest": "xo",
-    "test": "ava",
+    "test": "ava --serial",
     "rollup": "rollup -c",
     "prebuild": "npm test",
     "build": "npm run rollup",
@@ -65,11 +65,11 @@
     ]
   },
   "devDependencies": {
-    "ava": "2.2.0",
+    "ava": "2.4.0",
     "esm": "3.2.25",
-    "jsdom": "15.1.1",
-    "rollup": "1.16.7",
+    "jsdom": "15.2.0",
+    "rollup": "1.25.0",
     "simulant": "0.2.2",
-    "xo": "0.24.0"
+    "xo": "0.25.3"
   }
 }
