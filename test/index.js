@@ -3,9 +3,9 @@
 
 'use strict'
 
-import test from 'ava'
-import simulant from 'simulant'
-import Mask from '../src'
+const test = require('ava')
+const simulant = require('simulant')
+const Mask = require('../src')
 
 test('mask', t => {
 	const input = document.querySelector('#placa')
@@ -14,18 +14,16 @@ test('mask', t => {
 })
 
 test('throws sem input', t => {
-	const error = t.throws(() => {
+	t.throws(() => {
 		const mask = new Mask('not a input')
-	}, TypeError)
-	t.is(error.message, 'The input should be a HTMLInputElement')
+	}, {instanceOf: TypeError, message: 'The input should be a HTMLInputElement'})
 })
 
 test('throws sem mask', t => {
-	const error = t.throws(() => {
+	t.throws(() => {
 		const input = document.querySelector('#placa')
 		const mask = new Mask(input)
-	}, Error)
-	t.is(error.message, 'The mask can not be empty')
+	}, {instanceOf: Error, message: 'The mask can not be empty'})
 })
 
 test('input', t => {

@@ -38,7 +38,7 @@ $ npm i -S @tadashi/mask
 	<body>
 		<input id="telefone" type="text" data-mask="(99) 9-9999-9999">
 		<script type="module">
-			import Mask from './node_modules/@tadashi/mask/src/index.js'
+			import Mask from './node_modules/@tadashi/mask/dist/index.js'
 			const el = document.getElementById('telefone')
 			const mask = new Mask(el)
 		</script>

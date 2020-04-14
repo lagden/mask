@@ -1,6 +1,6 @@
 {
   "name": "@tadashi/mask",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "The simple and tiny script for input mask",
   "keywords": [
     "mask",
@@ -17,14 +17,14 @@
     "email": "lagden@gmail.com",
     "url": "https://lagden.in"
   },
-  "main": "dist/index.js",
+  "main": "dist/index.umd.js",
   "repository": "lagden/mask",
   "scripts": {
     "report": "nyc report --reporter=text-lcov | coveralls",
     "pretest": "xo",
     "test": "ava --serial",
     "rollup": "rollup -c",
-    "prebuild": "npm test",
+    "prebuild": "npm test && rm -rf dist",
     "build": "npm run rollup",
     "start": "npm run build"
   },
@@ -47,17 +47,20 @@
     "esnext": true,
     "semicolon": false,
     "rules": {
-      "capitalized-comments": 0
+      "capitalized-comments": 0,
+      "unicorn/prevent-abbreviations": 0,
+      "no-constructor-return": 0
+    }
+  },
+  "esm": {
+    "cjs": {
+      "dedefault": true
     }
   },
   "ava": {
-    "babel": false,
-    "extensions": [
-      "js",
-      "mjs"
-    ],
-    "helpers": [
-      "test/helpers/**/*"
+    "files": [
+      "test/**/*",
+      "!test/helpers/**/*"
     ],
     "require": [
       "esm",
@@ -65,11 +68,11 @@
     ]
   },
   "devDependencies": {
-    "ava": "2.4.0",
+    "ava": "3.7.0",
     "esm": "3.2.25",
-    "jsdom": "15.2.0",
-    "rollup": "1.25.0",
+    "jsdom": "16.2.2",
+    "rollup": "2.6.1",
     "simulant": "0.2.2",
-    "xo": "0.25.3"
+    "xo": "0.29.1"
   }
 }

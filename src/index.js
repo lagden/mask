@@ -1,8 +1,8 @@
 'use strict'
 
 const map = new Map()
-map.set('9', /[\d]/)
-map.set('A', /[0-9a-zA-Z]/)
+map.set('9', /\d/)
+map.set('A', /[\da-zA-Z]/)
 map.set('S', /[a-zA-Z]/)
 
 const instances = new Map()
@@ -16,7 +16,7 @@ class Mask {
 	}
 
 	static masking(_value, _mask) {
-		const value = String(_value).replace(/[^0-9a-zA-Z]/g, '')
+		const value = String(_value).replace(/[^\da-zA-Z]/g, '')
 		const mask = String(_mask)
 
 		const res = []
