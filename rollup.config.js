@@ -1,6 +1,6 @@
 'use strict'
 
-export default [
+const config = [
 	{
 		input: 'src/index.js',
 		output: [
@@ -20,3 +20,5 @@ export default [
 		]
 	}
 ]
+
+export default config
