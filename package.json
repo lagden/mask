@@ -1,6 +1,6 @@
 {
   "name": "@tadashi/mask",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "The simple and tiny script for input mask",
   "keywords": [
     "mask",
@@ -68,6 +68,8 @@
     ]
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "15.1.0",
+    "@rollup/plugin-node-resolve": "9.0.0",
     "ava": "3.13.0",
     "esm": "3.2.25",
     "jsdom": "16.4.0",
