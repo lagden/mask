@@ -1,5 +1,7 @@
 'use strict'
 
+import hexID from '@tadashi/hex-id'
+
 const map = new Map()
 map.set('9', /\d/)
 map.set('A', /[\da-zA-Z]/)
@@ -8,7 +10,6 @@ map.set('S', /[a-zA-Z]/)
 const instances = new Map()
 
 const GUID = Symbol('GUID')
-const EVENT = Symbol('EVENT')
 
 class Mask {
 	static data(input) {
@@ -16,31 +17,37 @@ class Mask {
 	}
 
 	static masking(_value, _mask) {
-		const value = String(_value).replace(/[^\da-zA-Z]/g, '')
 		const mask = String(_mask)
+		const value = String(_value).replace(/[^\da-zA-Z]/g, '')
 
 		const res = []
 		let cc = 0
 
 		for (let i = 0; i < mask.length; i++) {
 			const char = mask.charAt(i)
-			if (value.length > cc) {
-				if (map.has(char)) {
-					if (map.get(char).test(value.charAt(cc))) {
-						res.push(value.charAt(cc++))
-					} else {
-						break
-					}
-				} else {
-					res.push(char)
-				}
+			if (map.has(char) === false) {
+				res.push(char)
+				continue
+			}
+
+			if (value.length > cc && map.get(char).test(value.charAt(cc))) {
+				res.push(value.charAt(cc++))
+			} else {
+				break
 			}
 		}
 
 		return res.join('')
 	}
 
-	constructor(input, mask = '', keyEvent = 'input') {
+	constructor(...args) {
+		const [
+			input,
+			mask = '',
+			keyEvent = 'input',
+			triggerOnBlur = false
+		] = args
+
 		if (input instanceof HTMLInputElement === false) {
 			throw new TypeError('The input should be a HTMLInputElement')
 		}
@@ -51,6 +58,8 @@ class Mask {
 			return instance
 		}
 
+		this.events = new Set()
+
 		this.input = input
 		this.mask = input.dataset.mask || mask
 
@@ -60,11 +69,16 @@ class Mask {
 		}
 
 		// Listener
-		this[EVENT] = keyEvent
-		this.input.addEventListener(this[EVENT], this)
+		this.input.addEventListener(keyEvent, this)
+		this.events.add(keyEvent)
+
+		if (triggerOnBlur) {
+			this.input.addEventListener('blur', this)
+			this.events.add('blur')
+		}
 
 		// Storage instance
-		this.input[GUID] = `${Math.random()}_${Date.now()}`
+		this.input[GUID] = hexID()
 		instances.set(this.input[GUID], this)
 	}
 
@@ -78,7 +92,10 @@ class Mask {
 	}
 
 	destroy() {
-		this.input.removeEventListener(this[EVENT], this)
+		for (const _event of this.events) {
+			this.input.removeEventListener(_event, this)
+		}
+
 		if (instances.has(this.input[GUID])) {
 			instances.delete(this.input[GUID])
 		}

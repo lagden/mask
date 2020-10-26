@@ -1,6 +1,6 @@
 {
   "name": "@tadashi/mask",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "The simple and tiny script for input mask",
   "keywords": [
     "mask",
@@ -68,11 +68,14 @@
     ]
   },
   "devDependencies": {
-    "ava": "3.10.1",
+    "ava": "3.13.0",
     "esm": "3.2.25",
-    "jsdom": "16.3.0",
-    "rollup": "2.21.0",
+    "jsdom": "16.4.0",
+    "rollup": "2.32.1",
     "simulant": "0.2.2",
-    "xo": "0.32.1"
+    "xo": "0.34.1"
+  },
+  "dependencies": {
+    "@tadashi/hex-id": "2.0.0"
   }
 }

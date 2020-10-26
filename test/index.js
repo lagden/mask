@@ -7,10 +7,9 @@ const test = require('ava')
 const simulant = require('simulant')
 const Mask = require('../src')
 
-test('mask', t => {
-	const input = document.querySelector('#placa')
-	input.value = Mask.masking('ABC12', 'SSS-9999')
-	t.is(input.value, 'ABC-12')
+test('static mask', t => {
+	const v = Mask.masking('ABC12', 'SSS-9999')
+	t.is(v, 'ABC-12')
 })
 
 test('throws sem input', t => {
@@ -50,6 +49,18 @@ test('keyup', t => {
 
 	// simulant.fire(input, 'input', {inputType: 'deleteContentBackward'})
 	t.is(input.value, '(11) 9-687')
+	mask.destroy()
+})
+
+test('blur', t => {
+	const input = document.querySelector('#telefone')
+	input.value = ''
+
+	const mask = new Mask(input, undefined, 'keyup', true)
+	input.value = '11968Z76'
+	simulant.fire(input, 'blur')
+
+	t.is(input.value, '(11) 9-68')
 	mask.destroy()
 })
 
