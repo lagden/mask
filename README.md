@@ -30,20 +30,19 @@ $ npm i -S @tadashi/mask
 ```html
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, user-scalable=no">
-		<title>Example</title>
-	</head>
-	<body>
-		<input id="telefone" type="text" data-mask="(99) 9-9999-9999">
-		<script type="module">
-			import Mask from './node_modules/@tadashi/mask/dist/index.js'
-			const el = document.getElementById('telefone')
-			const mask = new Mask(el)
-		</script>
-	</body>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <title>Example</title>
+  </head>
+  <body>
+    <input id="telefone" type="text" data-mask="(99) 9-9999-9999">
+    <script type="module">
+      import Mask from './node_modules/@tadashi/mask/dist/index.js'
+      const mask = new Mask(telefone)
+    </script>
+  </body>
 </html>
 ```
 
