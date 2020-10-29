@@ -1,6 +1,6 @@
 {
   "name": "@tadashi/mask",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "The simple and tiny script for input mask",
   "keywords": [
     "mask",
@@ -26,7 +26,8 @@
     "coverage": "nyc --reporter=text-summary --reporter=lcov ava --serial -t",
     "rollup": "rollup -c",
     "prebuild": "npm test && rm -rf dist",
-    "build": "npm run rollup"
+    "build": "npm run rollup",
+    "prepublish": "npm run build"
   },
   "files": [
     "dist",
