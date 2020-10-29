@@ -1,6 +1,7 @@
 'use strict'
 
-import hexID from '@tadashi/hex-id'
+let _cc = 0
+const _id = () => `c_${Math.trunc(Date.now() / 1000)}_${_cc++ & 0xFF}`
 
 const map = new Map()
 map.set('9', /\d/)
@@ -78,7 +79,7 @@ class Mask {
 		}
 
 		// Storage instance
-		this.input[GUID] = hexID()
+		this.input[GUID] = _id()
 		instances.set(this.input[GUID], this)
 	}
 

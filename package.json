@@ -1,6 +1,6 @@
 {
   "name": "@tadashi/mask",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "The simple and tiny script for input mask",
   "keywords": [
     "mask",
@@ -20,13 +20,13 @@
   "main": "dist/index.umd.js",
   "repository": "lagden/mask",
   "scripts": {
-    "report": "nyc report --reporter=text-lcov | coveralls",
     "pretest": "xo",
-    "test": "ava --serial",
+    "test": "ava --serial -t",
+    "precoverage": "npm run pretest",
+    "coverage": "nyc --reporter=text-summary --reporter=lcov ava --serial -t",
     "rollup": "rollup -c",
     "prebuild": "npm test && rm -rf dist",
-    "build": "npm run rollup",
-    "start": "npm run build"
+    "build": "npm run rollup"
   },
   "files": [
     "dist",
@@ -68,16 +68,11 @@
     ]
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "15.1.0",
-    "@rollup/plugin-node-resolve": "9.0.0",
     "ava": "3.13.0",
     "esm": "3.2.25",
     "jsdom": "16.4.0",
     "rollup": "2.32.1",
     "simulant": "0.2.2",
     "xo": "0.34.1"
-  },
-  "dependencies": {
-    "@tadashi/hex-id": "2.0.0"
   }
 }

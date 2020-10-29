@@ -10,9 +10,7 @@
 		<input id="telefone" type="text" data-mask="(99) 9-9999-9999">
 		<script type="module">
 			import Mask from '../src/index.js'
-			const el = document.getElementById('telefone')
-			const mask = new Mask(el)
-			window.Mask = Mask
+			const mask = new Mask(telefone)
 		</script>
 	</body>
 </html>
