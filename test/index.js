@@ -38,10 +38,18 @@ test('input', t => {
 	mask.destroy()
 })
 
+test('input init', t => {
+	const input = document.querySelector('#telefone')
+	input.value = '11968'
+	const mask = new Mask(input, {init: true})
+	t.is(input.value, '(11) 9-68')
+	mask.destroy()
+})
+
 test('keyup', t => {
 	const input = document.querySelector('#telefone')
 	input.value = ''
-	const mask = new Mask(input, null, 'keyup')
+	const mask = new Mask(input, {keyEvent: 'keyup'})
 	for (const char of '11968Z7'.split('')) {
 		input.value += char
 		simulant.fire(input, 'keyup')
@@ -56,7 +64,7 @@ test('blur', t => {
 	const input = document.querySelector('#telefone')
 	input.value = ''
 
-	const mask = new Mask(input, undefined, 'keyup', true)
+	const mask = new Mask(input, {keyEvent: 'keyup', triggerOnBlur: true})
 	input.value = '11968Z76'
 	simulant.fire(input, 'blur')
 
@@ -77,7 +85,7 @@ test('instance diff and destroy', t => {
 	const inputA = document.querySelector('#telefone')
 	const inputB = document.querySelector('#placa')
 	const mask = new Mask(inputA)
-	const _mask = new Mask(inputB, 'SSS-9999')
+	const _mask = new Mask(inputB, {mask: 'SSS-9999'})
 	t.false(mask === _mask)
 	mask.destroy()
 	_mask.destroy()

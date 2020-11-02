@@ -41,13 +41,14 @@ class Mask {
 		return res.join('')
 	}
 
-	constructor(...args) {
-		const [
-			input,
-			mask = '',
-			keyEvent = 'input',
-			triggerOnBlur = false
-		] = args
+	constructor(input, opts = {}) {
+		this.opts = {
+			keyEvent: 'input',
+			triggerOnBlur: false,
+			init: false,
+			mask: '',
+			...opts
+		}
 
 		if (input instanceof HTMLInputElement === false) {
 			throw new TypeError('The input should be a HTMLInputElement')
@@ -62,18 +63,25 @@ class Mask {
 		this.events = new Set()
 
 		this.input = input
-		this.mask = input.dataset.mask || mask
+		// Problema no ESM - https://github.com/standard-things/esm/issues/866
+		// this.mask = input.dataset?.mask ?? mask
+		this.mask = input.dataset.mask || this.opts.mask
 
 		// Check if has mask
 		if (this.mask.length === 0) {
 			throw new Error('The mask can not be empty')
 		}
 
-		// Listener
-		this.input.addEventListener(keyEvent, this)
-		this.events.add(keyEvent)
+		// Initialize
+		if (this.opts.init) {
+			this.input.value = Mask.masking(this.input.value, this.mask)
+		}
 
-		if (triggerOnBlur) {
+		// Listener
+		this.input.addEventListener(this.opts.keyEvent, this)
+		this.events.add(this.opts.keyEvent)
+
+		if (this.opts.triggerOnBlur) {
 			this.input.addEventListener('blur', this)
 			this.events.add('blur')
 		}
