@@ -27,6 +27,8 @@ $ npm i -S @tadashi/mask
 
 ## Usage
 
+Codepen example: https://codepen.io/lagden/pen/XzLYJE
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -49,4 +51,4 @@ $ npm i -S @tadashi/mask
 
 ## License
 
-MIT © [Thiago Lagden](http://lagden.in)
+MIT © Thiago Lagden
