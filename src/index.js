@@ -26,15 +26,16 @@ class Mask {
 
 		for (let i = 0; i < mask.length; i++) {
 			const char = mask.charAt(i)
-			if (map.has(char) === false) {
-				res.push(char)
-				continue
-			}
-
-			if (value.length > cc && map.get(char).test(value.charAt(cc))) {
-				res.push(value.charAt(cc++))
-			} else {
-				break
+			if (value.length > cc) {
+				if (map.has(char)) {
+					if (map.get(char).test(value.charAt(cc))) {
+						res.push(value.charAt(cc++))
+					} else {
+						break
+					}
+				} else {
+					res.push(char)
+				}
 			}
 		}
 

@@ -46,6 +46,14 @@ test('input init', t => {
 	mask.destroy()
 })
 
+test('input init empty', t => {
+	const input = document.querySelector('#telefone')
+	input.value = ''
+	const mask = new Mask(input, {init: true})
+	t.is(input.value, '')
+	mask.destroy()
+})
+
 test('keyup', t => {
 	const input = document.querySelector('#telefone')
 	input.value = ''
