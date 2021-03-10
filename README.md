@@ -2,15 +2,12 @@
 
 [![Build Status][ci-img]][ci]
 [![Coverage Status][coveralls-img]][coveralls]
-[![devDependency Status][devDep-img]][devDep]
 [![XO code style][xo-img]][xo]
 
 [ci-img]:        https://github.com/lagden/mask/workflows/Node.js%20CI/badge.svg
 [ci]:            https://github.com/lagden/mask/actions?query=workflow%3A%22Node.js+CI%22
 [coveralls-img]: https://coveralls.io/repos/github/lagden/mask/badge.svg?branch=master
 [coveralls]:     https://coveralls.io/github/lagden/mask?branch=master
-[devDep-img]:    https://david-dm.org/lagden/mask/dev-status.svg
-[devDep]:        https://david-dm.org/lagden/mask#info=devDependencies
 [xo-img]:        https://img.shields.io/badge/code_style-XO-5ed9c7.svg
 [xo]:            https://github.com/sindresorhus/xo
 
