@@ -14,10 +14,15 @@
   "license": "MIT",
   "author": {
     "name": "Thiago Lagden",
-    "email": "lagden@gmail.com",
-    "url": "https://lagden.in"
+    "email": "lagden@gmail.com"
   },
-  "main": "dist/index.umd.js",
+  "main": "src/index.js",
+  "files": [
+    "dist",
+    "src",
+    "license",
+    "README.md"
+  ],
   "repository": "lagden/mask",
   "scripts": {
     "coverage": "jest test --coverage --coverageReporters=lcov",
@@ -28,12 +33,6 @@
     "pretest": "xo",
     "test": "jest test"
   },
-  "files": [
-    "dist",
-    "src",
-    "license",
-    "README.md"
-  ],
   "xo": {
     "envs": [
       "es6"

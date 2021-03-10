@@ -64,8 +64,8 @@ class Mask {
 		this.events = new Set()
 
 		this.input = input
-		// Problema no ESM - https://github.com/standard-things/esm/issues/866
-		// this.mask = input.dataset?.mask ?? mask
+
+		// this.mask = input.dataset?.mask ?? this.opts.mask
 		this.mask = input.dataset.mask || this.opts.mask
 
 		// Check if has mask
