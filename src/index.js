@@ -1,7 +1,7 @@
 'use strict'
 
 let _cc = 0
-const _id = () => `c_${Math.trunc(Date.now() / 1000)}_${_cc++ & 0xFF}`
+const _id = () => `c_${Number(_cc++).toString(26)}_${Math.trunc(Date.now() / 1000)}`
 
 const map = new Map()
 map.set('9', /\d/)

@@ -6,7 +6,7 @@ const config = [
 		output: [
 			{
 				file: 'dist/index.js',
-				format: 'esm',
+				format: 'es',
 				name: 'Mask',
 				sourcemap: true,
 				strict: false
