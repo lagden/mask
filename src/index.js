@@ -62,11 +62,8 @@ class Mask {
 		}
 
 		this.events = new Set()
-
 		this.input = input
-
-		// this.mask = input.dataset?.mask ?? this.opts.mask
-		this.mask = input.dataset.mask || this.opts.mask
+		this.mask = input.dataset?.mask ?? this.opts.mask
 
 		// Check if has mask
 		if (this.mask.length === 0) {

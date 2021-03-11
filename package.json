@@ -38,8 +38,12 @@
       "es6"
     ],
     "globals": [
+      "beforeEach",
+      "test",
+      "expect",
       "document",
       "window",
+      "Event",
       "HTMLElement",
       "HTMLInputElement"
     ],
