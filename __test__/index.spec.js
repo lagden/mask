@@ -2,6 +2,7 @@
 
 'use strict'
 
+import simulant from 'simulant'
 import Mask from '../src/index.js'
 
 beforeEach(() => {
@@ -16,26 +17,12 @@ test('static mask', () => {
 	expect(v).toBe('ABC-12')
 })
 
-test('throws sem input', () => {
-	expect(() => {
-		new Mask('not a input')
-	}).toThrowError('The input should be a HTMLInputElement')
-})
-
-test('throws sem mask', () => {
-	expect(() => {
-		const input = document.querySelector('#placa')
-		new Mask(input)
-	}).toThrowError('The mask can not be empty')
-})
-
 test('input', () => {
 	const input = document.querySelector('#telefone')
 	const mask = new Mask(input)
 	for (const char of '11968Z7'.split('')) {
 		input.value += char
-		const event = new Event('input', {bubbles: true, cancelable: true})
-		input.dispatchEvent(event)
+		simulant.fire(input, 'input')
 	}
 
 	expect(input.value).toBe('(11) 9-687')
@@ -64,8 +51,7 @@ test('keyup', () => {
 	const mask = new Mask(input, {keyEvent: 'keyup'})
 	for (const char of '11968Z7'.split('')) {
 		input.value += char
-		const event = new Event('keyup', {bubbles: true, cancelable: true})
-		input.dispatchEvent(event)
+		simulant.fire(input, 'keyup')
 	}
 
 	expect(input.value).toBe('(11) 9-687')
@@ -78,20 +64,10 @@ test('blur', () => {
 
 	const mask = new Mask(input, {keyEvent: 'keyup', triggerOnBlur: true})
 	input.value = '11968Z76'
-	const event = new Event('blur', {bubbles: true, cancelable: true})
-	input.dispatchEvent(event)
+	simulant.fire(input, 'blur')
 
 	expect(input.value).toBe('(11) 9-68')
 	mask.destroy()
-})
-
-test('instance and destroy', () => {
-	const input = document.querySelector('#telefone')
-	const mask = new Mask(input)
-	const _mask = new Mask(input)
-	expect(mask).toEqual(_mask)
-	mask.destroy()
-	_mask.destroy()
 })
 
 test('instance diff and destroy', () => {
@@ -102,4 +78,34 @@ test('instance diff and destroy', () => {
 	expect(mask).not.toBe(_mask)
 	mask.destroy()
 	_mask.destroy()
+})
+
+test('instance and destroy', () => {
+	const input = document.querySelector('#telefone')
+	const mask = new Mask(input)
+	const _mask = Mask.data(input)
+	expect(mask).toEqual(_mask)
+	mask.destroy()
+	_mask.destroy()
+})
+
+test('throws instanced', () => {
+	expect(() => {
+		const input = document.querySelector('#telefone')
+		new Mask(input)
+		new Mask(input)
+	}).toThrow('The input has already been instanced. Use the static method `Mask.data(input)` to get the instance.')
+})
+
+test('throws sem input', () => {
+	expect(() => {
+		new Mask('not a input')
+	}).toThrowError('The input should be a HTMLInputElement')
+})
+
+test('throws sem mask', () => {
+	expect(() => {
+		const input = document.querySelector('#placa')
+		new Mask(input)
+	}).toThrowError('The mask can not be empty')
 })

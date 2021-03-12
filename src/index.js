@@ -58,7 +58,7 @@ class Mask {
 		// Check if element has an instance
 		const instance = Mask.data(input)
 		if (instance instanceof Mask) {
-			return instance
+			throw new TypeError('The input has already been instanced. Use the static method `Mask.data(input)` to get the instance.')
 		}
 
 		this.events = new Set()
