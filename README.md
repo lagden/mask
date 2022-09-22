@@ -30,7 +30,8 @@ Codepen example: https://codepen.io/lagden/pen/XzLYJE
 <input id="telefone" type="text" data-mask="(99) 9-9999-9999">
 
 <script type="module">
-  import Mask from 'https://unpkg.com/@tadashi/mask@{version}/src/index.js'
+  import Mask from 'https://unpkg.com/@tadashi/mask@{version}/src/mask.js'
+
   const mask = new Mask(telefone)
 </script>
 ```

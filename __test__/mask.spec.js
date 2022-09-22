@@ -1,9 +1,8 @@
-/* eslint no-new: 0 */
-
-'use strict'
+/* eslint-disable no-new */
+/* eslint-disable no-undef */
 
 import simulant from 'simulant'
-import Mask from '../src/index.js'
+import Mask from '../src/mask.js'
 
 beforeEach(() => {
 	document.body.innerHTML = `
@@ -20,7 +19,7 @@ test('static mask', () => {
 test('input', () => {
 	const input = document.querySelector('#telefone')
 	const mask = new Mask(input)
-	for (const char of '11968Z7'.split('')) {
+	for (const char of '11968Z7') {
 		input.value += char
 		simulant.fire(input, 'input')
 	}
@@ -49,7 +48,7 @@ test('keyup', () => {
 	const input = document.querySelector('#telefone')
 	input.value = ''
 	const mask = new Mask(input, {keyEvent: 'keyup'})
-	for (const char of '11968Z7'.split('')) {
+	for (const char of '11968Z7') {
 		input.value += char
 		simulant.fire(input, 'keyup')
 	}

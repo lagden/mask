@@ -10,19 +10,18 @@ ok() {
 
 load_env() {
 	_DIR="$(pwd)"
-	ENVFILE_BASE="${2:-$_DIR}/.env-base"
 	ENVFILE_LOCAL="${2:-$_DIR}/.env-local"
 	ENVFILE_OPT="${2:-$_DIR}/.env-${1:-development}"
-	if test ! -e $ENVFILE_BASE -o ! -e $ENVFILE_OPT; then
+
+	if test ! -e $ENVFILE_OPT; then
 		abort "Environment file not found"
 	fi
 
 	set -a
-	. ${ENVFILE_BASE}
 	. ${ENVFILE_OPT}
 	set +a
 
-	if test -e $ENVFILE_LOCAL; then
+	if test -e $ENVFILE_LOCAL -a "${1}" = "development"; then
 		set -a
 		. ${ENVFILE_LOCAL}
 		set +a
@@ -30,8 +29,9 @@ load_env() {
 }
 
 gen_env() {
-	_DIR="$(cd -P "$(dirname "$0")" && pwd)"
-	GEN_ENV="${2:-$_DIR}/gen_env"
+	_DIR="$(cd $(dirname $0) && pwd)"
+	_BIN_DIR="$(cd $DIR/.. && pwd)"
+	GEN_ENV="${2:-$_BIN_DIR}/node/envs.js"
 
 	if test -z $1; then
 		abort "Missing output"
@@ -41,7 +41,7 @@ gen_env() {
 		abort "File not found: ${GEN_ENV}"
 	fi
 
-	_DIR_FILE=$(dirname "$1")
+	_DIR_FILE=$(dirname $1)
 	mkdir -p $_DIR_FILE
 
 	$GEN_ENV > $1

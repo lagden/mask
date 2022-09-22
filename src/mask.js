@@ -1,25 +1,43 @@
-'use strict'
-
-let _cc = 0
-const _id = () => `c_${Number(_cc++).toString(26)}_${Math.trunc(Date.now() / 1000)}`
+/**
+ * Gerador de id aleatório
+ * @return {string} Retorna o uuid ou hexadecimal aleatório
+ */
+function _id() {
+	return Number(Math.random()).toString(16).slice(2, 8) + Date.now().toString(16)
+}
 
 const map = new Map()
 map.set('9', /\d/)
-map.set('A', /[\da-zA-Z]/)
-map.set('S', /[a-zA-Z]/)
+map.set('A', /[\dA-Za-z]/)
+map.set('S', /[A-Za-z]/)
 
 const instances = new Map()
-
 const GUID = Symbol('GUID')
 
+/** Class aplica mascara. */
 class Mask {
+	/**
+	 * Pega a instância
+	 * @param {HTMLInputElement} input - elemento com Mask aplicada
+	 * @return {Mask|boolean} Retorna a instância ou false
+	 * @memberof Mask
+	 * @static
+	 */
 	static data(input) {
 		return instances.has(input[GUID]) && instances.get(input[GUID])
 	}
 
+	/**
+	 * Mascara um valor
+	 * @param {string|number} _value - valor
+	 * @param {string} _mask - formato da máscara
+	 * @return {string} Retorna o valor mascaradi
+	 * @memberof Mask
+	 * @static
+	 */
 	static masking(_value, _mask) {
 		const mask = String(_mask)
-		const value = String(_value).replace(/[^\da-zA-Z]/g, '')
+		const value = String(_value).replace(/[^\dA-Za-z]/g, '')
 
 		const res = []
 		let cc = 0
@@ -48,10 +66,10 @@ class Mask {
 			triggerOnBlur: false,
 			init: false,
 			mask: '',
-			...opts
+			...opts,
 		}
 
-		if (input instanceof HTMLInputElement === false) {
+		if (input instanceof globalThis.HTMLInputElement === false) {
 			throw new TypeError('The input should be a HTMLInputElement')
 		}
 
