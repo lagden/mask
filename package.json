@@ -29,7 +29,8 @@
     "coverage": "jest test --coverage --coverageReporters=lcov",
     "eslint": "eslint --config .eslintrc.yml --ext .js --ignore-path .gitignore .",
     "pretest": "npm run eslint",
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --coverage --coverageReporters=lcov --coverageReporters=text"
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --coverage --coverageReporters=lcov --coverageReporters=text",
+    "prepublishOnly": "npm test"
   },
   "devDependencies": {
     "eslint": "8.23.1",
