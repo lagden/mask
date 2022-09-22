@@ -1,6 +1,11 @@
 /* eslint-disable no-new */
 /* eslint-disable no-undef */
 
+import {
+	expect,
+	test,
+	beforeEach,
+} from '@jest/globals'
 import simulant from 'simulant'
 import Mask from '../src/mask.js'
 
