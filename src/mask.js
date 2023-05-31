@@ -31,7 +31,7 @@ class Mask {
 	 * Mascara um valor
 	 * @param {string|number} _value - valor
 	 * @param {string} _mask - formato da máscara
-	 * @return {string} Retorna o valor mascaradi
+	 * @return {string} Retorna o valor mascarado
 	 * @memberof Mask
 	 * @static
 	 */
@@ -81,7 +81,10 @@ class Mask {
 
 		this.events = new Set()
 		this.input = input
-		this.mask = input.dataset?.mask ?? this.opts.mask
+
+		this.mask = input.dataset.mask ?? (
+			typeof this.opts.mask === 'function' ? this.opts.mask(input) : this.opts.mask
+		)
 
 		// Check if has mask
 		if (this.mask.length === 0) {
@@ -90,7 +93,7 @@ class Mask {
 
 		// Initialize
 		if (this.opts.init) {
-			this.input.value = Mask.masking(this.input.value, this.mask)
+			this.masking()
 		}
 
 		// Listener
@@ -113,6 +116,10 @@ class Mask {
 			return false
 		}
 
+		if (typeof this.opts.mask === 'function') {
+			this.mask = this.opts.mask(this.input, event)
+		}
+
 		this.input.value = Mask.masking(this.input.value, this.mask)
 	}
 
@@ -126,6 +133,9 @@ class Mask {
 		}
 	}
 
+	/**
+	 * @param {Event} event
+	 * */
 	handleEvent(event) {
 		this.masking(event)
 	}
