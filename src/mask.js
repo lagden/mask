@@ -60,7 +60,38 @@ class Mask {
 		return res.join('')
 	}
 
+	/**
+	 *
+	 * @typedef {(input: HTMLInputElement, event?: Event)=>string} DynamicMask
+	 * - A function that returns the mask string on the fly.
+	 * It runs on each event, to evaluate new mask before applying it.
+	 *
+	 * The given function receives the associated input as first argument,
+	 * and the event triggering the mask as the second,
+	 *
+	 * _NOTE: no event is sent on **initial** evaluation (if constructor's `opts.init` is set to true)_
+	 *
+	 *
+	 * @typedef {{
+	 * 	keyEvent: keyof HTMLElementEventMap,
+	 * 	triggerOnBlur: Boolean,
+	 * 	init: Boolean,
+	 * 	mask: string | DynamicMask | undefined
+	 * }} Opts
+	 *
+	 *
+	 * @param {HTMLInputElement} input
+	 * @param {Partial<Opts>} opts
+	 * */
 	constructor(input, opts = {}) {
+		// satityze user's opts
+		for (const key of Object.keys(opts)) {
+			if (opts[key] === null || opts[key] === undefined) {
+				delete opts[key]
+			}
+		}
+
+		/** @type {Opts} */
 		this.opts = {
 			keyEvent: 'input',
 			triggerOnBlur: false,
@@ -82,14 +113,7 @@ class Mask {
 		this.events = new Set()
 		this.input = input
 
-		// evaluate initial mask
-		if (typeof this.opts.mask === 'function') {
-			this.mask = this.opts.mask(input)
-		} else if (typeof this.opts.mask === 'string') {
-			this.mask = this.opts.mask
-		} else {
-			this.mask = input.dataset.mask
-		}
+		this.#evaluateMask()
 
 		// Check if has mask
 		if (!this.mask) {
@@ -115,16 +139,40 @@ class Mask {
 		instances.set(this.input[GUID], this)
 	}
 
+	/**
+	* @type {Boolean | undefined}
+	*/
+	#dynamicMask = undefined
+
+	/**
+	 * @param {InputEvent} [event] - event to pass to DynamicMask if it is the masking method used
+	 * */
+	#evaluateMask(event) {
+		if (this.#dynamicMask === false) {
+			return
+		}
+
+		if (typeof this.opts.mask === 'function') {
+			this.mask = this.opts.mask(this.input, event)
+			this.#dynamicMask = true
+			return
+		}
+		this.#dynamicMask = false
+
+		this.mask = typeof this.opts.mask === 'string'
+			? this.mask = this.opts.mask : this.mask = this.input.dataset.mask
+	}
+
+	/**
+	 * @param {InputEvent} [event]
+	 * */
 	masking(event) {
 		/* istanbul ignore next */
 		if (event && event.inputType === 'deleteContentBackward') {
 			return false
 		}
 
-		if (typeof this.opts.mask === 'function') {
-			this.mask = this.opts.mask(this.input, event)
-		}
-
+		this.#evaluateMask(event)
 		this.input.value = Mask.masking(this.input.value, this.mask)
 	}
 
@@ -139,7 +187,7 @@ class Mask {
 	}
 
 	/**
-	 * @param {Event} event
+	 * @param {InputEvent} event
 	 * */
 	handleEvent(event) {
 		this.masking(event)
