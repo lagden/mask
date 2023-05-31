@@ -97,14 +97,9 @@ class Mask {
 		// satityze user's opts
 		for (const key of Object.keys(opts)) {
 			if (opts[key] === null || opts[key] === undefined) {
-				delete opts[key]
+				continue
 			}
-		}
-
-		/** @type {Opts} */
-		this.opts = {
-			...this.opts,
-			...opts,
+			this.opts[key] = opts[key]
 		}
 
 		if (input instanceof globalThis.HTMLInputElement === false) {
