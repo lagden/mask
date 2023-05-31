@@ -65,7 +65,7 @@ class Mask {
 			keyEvent: 'input',
 			triggerOnBlur: false,
 			init: false,
-			mask: '',
+			mask: undefined,
 			...opts,
 		}
 
@@ -82,12 +82,17 @@ class Mask {
 		this.events = new Set()
 		this.input = input
 
-		this.mask = input.dataset.mask ?? (
-			typeof this.opts.mask === 'function' ? this.opts.mask(input) : this.opts.mask
-		)
+		// evaluate initial mask
+		if (typeof this.opts.mask === 'function') {
+			this.mask = this.opts.mask(input)
+		} else if (typeof this.opts.mask === 'string') {
+			this.mask = this.opts.mask
+		} else {
+			this.mask = input.dataset.mask
+		}
 
 		// Check if has mask
-		if (this.mask.length === 0) {
+		if (!this.mask) {
 			throw new Error('The mask can not be empty')
 		}
 
