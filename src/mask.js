@@ -61,7 +61,6 @@ class Mask {
 	}
 
 	/**
-	 *
 	 * @typedef {(input: HTMLInputElement, event?: Event)=>string} DynamicMask
 	 * - A function that returns the mask string on the fly.
 	 * It runs on each event, to evaluate new mask before applying it.
@@ -80,10 +79,21 @@ class Mask {
 	 * 	mask: string | DynamicMask | undefined
 	 * }} Opts
 	 *
-	 *
-	 * @param {HTMLInputElement} input
-	 * @param {Partial<Opts>} opts
-	 * */
+	 * @type {Opts}
+	 */
+	opts = {
+		keyEvent: 'input',
+		triggerOnBlur: false,
+		triggerOnDelete: false, // default to false for backward compatibility
+		dynamicDataMask: false,
+		init: false,
+		mask: undefined,
+	}
+
+	/**
+	* @param {HTMLInputElement} input
+	* @param {Partial<Opts>} opts
+	* */
 	constructor(input, opts = {}) {
 		// satityze user's opts
 		for (const key of Object.keys(opts)) {
@@ -94,11 +104,7 @@ class Mask {
 
 		/** @type {Opts} */
 		this.opts = {
-			keyEvent: 'input',
-			triggerOnBlur: false,
-			triggerOnDelete: false, // default to false for backward compatibility
-			init: false,
-			mask: undefined,
+			...this.opts,
 			...opts,
 		}
 
