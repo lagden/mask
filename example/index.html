@@ -24,6 +24,14 @@
 	<input id="tel" type="text" placeholder="telefone">
 	<input id="doc" type="text" placeholder="documento">
 
+	<fieldset>
+		<select id="tipo">
+			<option selected>BRL</option>
+			<option>USD</option>
+		</select>
+		<input id="valor" type="text" placeholder="valor" data-mask="9 999,99" value="123456">
+	</fieldset>
+
 	<script type="module">
 		import Mask from '../src/mask.js'
 
@@ -48,6 +56,16 @@
 			},
 			triggerOnDelete: true
 		});
+
+
+		// change data-mask on the fly
+		const placaMask = new Mask(valor, {
+			dynamicDataMask: true,
+			init: true,
+		});
+		tipo.onchange = (e) => {
+			valor.dataset.mask = tipo.value === 'BRL' ? "9 999,99" : "9,999.99"
+		}
 	</script>
 </body>
 

@@ -76,6 +76,7 @@ class Mask {
 	 * 	triggerOnBlur: Boolean,
 	 * 	triggerOnDelete: Boolean,
 	 * 	init: Boolean,
+	 * 	dynamicDataMask: Boolean,
 	 * 	mask: string | DynamicMask | undefined
 	 * }} Opts
 	 *
@@ -85,6 +86,7 @@ class Mask {
 		keyEvent: 'input',
 		triggerOnBlur: false,
 		triggerOnDelete: false, // default to false for backward compatibility
+		dynamicDataMask: false,
 		init: false,
 		mask: undefined,
 	}
@@ -136,6 +138,22 @@ class Mask {
 			this.events.add('blur')
 		}
 
+		// observe input's data-mask changes
+		if (this.opts.dynamicDataMask) {
+			/* global MutationObserver */
+			this.maskObserver = new MutationObserver(items => {
+				if (items[0].attributeName !== 'data-mask') {
+					return
+				}
+
+				this.mask = this.input.dataset.mask
+				this.masking()
+			})
+			this.maskObserver.observe(input, {
+				attributes: true,
+			})
+		}
+
 		// Storage instance
 		this.input[GUID] = _id()
 		instances.set(this.input[GUID], this)
@@ -178,6 +196,10 @@ class Mask {
 			this.input.removeEventListener(_event, this)
 		}
 
+		if (this.maskObserver) {
+			this.maskObserver.disconnect();
+		}
+
 		if (instances.has(this.input[GUID])) {
 			instances.delete(this.input[GUID])
 		}
@@ -187,6 +209,7 @@ class Mask {
 	 * @param {InputEvent} event
 	 * */
 	handleEvent(event) {
+		console.log(event)
 		/* istanbul ignore next */
 		if (!this.opts.triggerOnDelete && (event.inputType === 'deleteContentBackward' || event.inputType === 'deleteContentForward')) {
 			return false
