@@ -28,24 +28,25 @@
 		import Mask from '../src/mask.js'
 
 		// static mask using data-attribute
-		const cepMask = new Mask(cep);
+		const = cepMask = new Mask(cep);
 
 
 		// static mask using string mask option
-		const telMask = new Mask(tel, {
+		const = telMask = new Mask(tel, {
 			mask: "(99) 9 9999-9999",
 			init: true,
 		});
 
 
 		// dynamic mask, passing function as mask option
-		const docMask = new Mask(doc, {
+		const = docMask = new Mask(doc, {
 			mask: (inp) => {
 				if (inp.value.replace(/\D/g, '').length > 11) {
 					return "99.999.999/9999-99"
 				}
 				return "999.999.999-999"
-			}
+			},
+			triggerOnDelete: true
 		});
 	</script>
 </body>

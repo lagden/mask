@@ -75,6 +75,7 @@ class Mask {
 	 * @typedef {{
 	 * 	keyEvent: keyof HTMLElementEventMap,
 	 * 	triggerOnBlur: Boolean,
+	 * 	triggerOnDelete: Boolean,
 	 * 	init: Boolean,
 	 * 	mask: string | DynamicMask | undefined
 	 * }} Opts
@@ -95,6 +96,7 @@ class Mask {
 		this.opts = {
 			keyEvent: 'input',
 			triggerOnBlur: false,
+			triggerOnDelete: false, // default to false for backward compatibility
 			init: false,
 			mask: undefined,
 			...opts,
@@ -167,11 +169,6 @@ class Mask {
 	 * @param {InputEvent} [event]
 	 * */
 	masking(event) {
-		/* istanbul ignore next */
-		if (event && event.inputType === 'deleteContentBackward') {
-			return false
-		}
-
 		this.#evaluateMask(event)
 		this.input.value = Mask.masking(this.input.value, this.mask)
 	}
@@ -190,6 +187,11 @@ class Mask {
 	 * @param {InputEvent} event
 	 * */
 	handleEvent(event) {
+		/* istanbul ignore next */
+		if (!this.opts.triggerOnDelete && (event.inputType === 'deleteContentBackward' || event.inputType === 'deleteContentForward')) {
+			return false
+		}
+
 		this.masking(event)
 	}
 }
