@@ -28,7 +28,7 @@ $ npm i @tadashi/mask
 
 ## Usage
 
-Codepen example: https://codepen.io/lagden/pen/XzLYJE
+See more examples here: https://codepen.io/lagden/pen/XzLYJE?editors=1010
 
 ```html
 <input id="telefone" type="text" data-mask="(99) 9-9999-9999">
