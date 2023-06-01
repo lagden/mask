@@ -6,67 +6,79 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, user-scalable=no">
 	<title>Example</title>
-	<style>
-		body {
-			display: flex;
-			flex-direction: column;
-			gap: 1rem;
-		}
-
-		fieldset input {
-			margin-left: auto
-		}
-	</style>
-</head>
-
-<body>
-	<input id="cep" type="text" placeholder="CEP" data-mask="99999-999">
-	<input id="tel" type="text" placeholder="telefone">
-	<input id="doc" type="text" placeholder="documento">
-
-	<fieldset>
-		<select id="tipo">
-			<option selected>BRL</option>
-			<option>USD</option>
-		</select>
-		<input id="valor" type="text" placeholder="valor" data-mask="9 999,99" value="123456">
-	</fieldset>
-
+	<script src="https://cdn.tailwindcss.com"></script>
 	<script type="module">
 		import Mask from '../src/mask.js'
 
-		// static mask using data-attribute
-		const cepMask = new Mask(cep);
+		// mask using data-attribute
+		const cepMask = new Mask(cep)
 
-
-		// static mask using string mask option
+		// mask using string
 		const telMask = new Mask(tel, {
-			mask: "(99) 9 9999-9999",
+			mask: '(99) 9 9999-9999',
 			init: true,
-		});
+		})
 
-
-		// dynamic mask, passing function as mask option
+		// mask using function
 		const docMask = new Mask(doc, {
-			mask: (inp) => {
-				if (inp.value.replace(/\D/g, '').length > 11) {
-					return "99.999.999/9999-99"
+			mask(input) {
+				if (input.value.replace(/\D/g, '').length > 11) {
+					return '99.999.999/9999-99'
 				}
-				return "999.999.999-999"
+				return '999.999.999-999'
 			},
-			triggerOnDelete: true
-		});
+			triggerOnDelete: true,
+		})
 
+		// mask using array
+		const docArrMask = new Mask(doc_arr, {
+			mask: ['999.999.999-99', '99.999.999/9999-99'],
+			maskSwapLength: 14,
+			triggerOnDelete: true,
+		})
 
 		// change data-mask on the fly
-		const placaMask = new Mask(valor, {
+		const valorMask = new Mask(valor, {
 			dynamicDataMask: true,
 			init: true,
-		});
-		tipo.onchange = (e) => {
-			valor.dataset.mask = tipo.value === 'BRL' ? "9 999,99" : "9,999.99"
-		}
+		})
+
+		tipo.addEventListener('change', () => {
+			valor.dataset.mask = tipo.value === 'BRL' ? '9.999,99' : '9,999.99'
+		})
 	</script>
+</head>
+
+<body class="grid h-screen place-items-center bg-slate-200">
+	<div class="grid grid-cols-1 gap-4">
+		<label class="block">
+			<span class="block text-sm font-medium text-slate-700">CEP via data-mask</span>
+			<input class="mt-1 block w-full px-3 py-2" id="cep" type="text" placeholder="CEP" data-mask="99999-999">
+		</label>
+		<label class="block">
+			<span class="block text-sm font-medium text-slate-700">Telefone via string</span>
+			<input class="mt-1 block w-full px-3 py-2" id="tel" type="text" placeholder="telefone">
+		</label>
+		<label class="block">
+			<span class="block text-sm font-medium text-slate-700">CPF/CNPF via fn</span>
+			<input class="mt-1 block w-full px-3 py-2" id="doc" type="text" placeholder="documento">
+		</label>
+		<label class="block">
+			<span class="block text-sm font-medium text-slate-700">CPF/CNPF via array</span>
+			<input class="mt-1 block w-full px-3 py-2" id="doc_arr" type="text" placeholder="documento">
+		</label>
+		<label class="block">
+			<span class="block text-sm font-medium text-slate-700">Currency via data-mask on the fly</span>
+			<div class="flex gap-1">
+				<select class="mt-1 min-w-min px-3 py-2" id="tipo">
+					<option selected value="BRL">BRL</option>
+					<option value="USD">USD</option>
+				</select>
+				<input class="mt-1 w-full px-3 py-2" id="valor" type="text" placeholder="valor" data-mask="9.999,99"
+					value="123456">
+		</label>
+	</div>
+	</div>
 </body>
 
 </html>

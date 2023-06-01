@@ -1,8 +1,12 @@
 /**
- * Gerador de id aleatório
- * @return {string} Retorna o uuid ou hexadecimal aleatório
+ * UUID generator
+ * @return {string} returns the hash
  */
 function _id() {
+	/* istanbul ignore next */
+	if (globalThis?.crypto?.randomUUID) {
+		return globalThis.crypto.randomUUID().replaceAll('-', '')
+	}
 	return Number(Math.random()).toString(16).slice(2, 8) + Date.now().toString(16)
 }
 
@@ -14,12 +18,12 @@ map.set('S', /[A-Za-z]/)
 const instances = new Map()
 const GUID = Symbol('GUID')
 
-/** Class aplica mascara. */
+/** class Mask */
 class Mask {
 	/**
-	 * Pega a instância
-	 * @param {HTMLInputElement} input - elemento com Mask aplicada
-	 * @return {Mask|boolean} Retorna a instância ou false
+	 * Get Mask instance
+	 * @param {HTMLInputElement} input - element with Mask instanced
+	 * @return {Mask|undefined} returns instance or undefined
 	 * @memberof Mask
 	 * @static
 	 */
@@ -28,16 +32,16 @@ class Mask {
 	}
 
 	/**
-	 * Mascara um valor
-	 * @param {string|number} _value - valor
-	 * @param {string} _mask - formato da máscara
-	 * @return {string} Retorna o valor mascarado
+	 * Masking a value
+	 * @param {string|number} _value - value
+	 * @param {string} _mask - mask format
+	 * @return {string} returns the masked value
 	 * @memberof Mask
 	 * @static
 	 */
 	static masking(_value, _mask) {
 		const mask = String(_mask)
-		const value = String(_value).replace(/[^\dA-Za-z]/g, '')
+		const value = String(_value).replaceAll(/[^\dA-Za-z]/g, '')
 
 		const res = []
 		let cc = 0
@@ -72,12 +76,13 @@ class Mask {
 	 *
 	 *
 	 * @typedef {{
-	 * 	keyEvent: keyof HTMLElementEventMap,
-	 * 	triggerOnBlur: Boolean,
-	 * 	triggerOnDelete: Boolean,
-	 * 	init: Boolean,
-	 * 	dynamicDataMask: Boolean,
-	 * 	mask: string | DynamicMask | undefined
+	 *  keyEvent: keyof HTMLElementEventMap,
+	 *  triggerOnBlur: Boolean,
+	 *  triggerOnDelete: Boolean,
+	 *  init: Boolean,
+	 *  dynamicDataMask: Boolean,
+	 *  mask: string | DynamicMask | undefined,
+	 *  maskSwapLength: number | undefined
 	 * }} Opts
 	 *
 	 * @type {Opts}
@@ -89,7 +94,13 @@ class Mask {
 		dynamicDataMask: false,
 		init: false,
 		mask: undefined,
+		maskSwapLength: undefined,
 	}
+
+	/**
+	* @type {Boolean | undefined}
+	*/
+	#dynamicMask = undefined
 
 	/**
 	* @param {HTMLInputElement} input
@@ -139,17 +150,18 @@ class Mask {
 		}
 
 		// observe input's data-mask changes
-		if (this.opts.dynamicDataMask) {
-			/* global MutationObserver */
-			this.maskObserver = new MutationObserver(items => {
-				if (items[0].attributeName !== 'data-mask') {
+		if (this.opts.dynamicDataMask === true) {
+			this.maskObserver = new globalThis.MutationObserver(([item]) => {
+				/* istanbul ignore next */
+				if (item.attributeName !== 'data-mask') {
 					return
 				}
 
-				this.mask = this.input.dataset.mask
+				this.mask = item.target.dataset.mask
 				this.masking()
 			})
-			this.maskObserver.observe(input, {
+
+			this.maskObserver.observe(this.input, {
 				attributes: true,
 			})
 		}
@@ -159,35 +171,30 @@ class Mask {
 		instances.set(this.input[GUID], this)
 	}
 
-	/**
-	* @type {Boolean | undefined}
-	*/
-	#dynamicMask = undefined
-
-	/**
-	 * @param {InputEvent} [event] - event to pass to DynamicMask if it is the masking method used
-	 * */
-	#evaluateMask(event) {
+	#evaluateMask() {
 		if (this.#dynamicMask === false) {
 			return
 		}
 
 		if (typeof this.opts.mask === 'function') {
-			this.mask = this.opts.mask(this.input, event)
+			this.mask = this.opts.mask(this.input)
 			this.#dynamicMask = true
 			return
 		}
-		this.#dynamicMask = false
 
-		this.mask = typeof this.opts.mask === 'string'
-			? this.mask = this.opts.mask : this.mask = this.input.dataset.mask
+		if (Array.isArray(this.opts.mask) && typeof this.opts.maskSwapLength === 'number') {
+			const pos = this.input.value.length > this.opts.maskSwapLength ? 1 : 0
+			this.mask = this.opts.mask[pos]
+			this.#dynamicMask = true
+			return
+		}
+
+		this.#dynamicMask = false
+		this.mask = typeof this.opts.mask === 'string' ? this.opts.mask : this.input.dataset.mask
 	}
 
-	/**
-	 * @param {InputEvent} [event]
-	 * */
-	masking(event) {
-		this.#evaluateMask(event)
+	masking() {
+		this.#evaluateMask()
 		this.input.value = Mask.masking(this.input.value, this.mask)
 	}
 
@@ -197,7 +204,7 @@ class Mask {
 		}
 
 		if (this.maskObserver) {
-			this.maskObserver.disconnect();
+			this.maskObserver.disconnect()
 		}
 
 		if (instances.has(this.input[GUID])) {
@@ -209,13 +216,12 @@ class Mask {
 	 * @param {InputEvent} event
 	 * */
 	handleEvent(event) {
-		console.log(event)
 		/* istanbul ignore next */
 		if (!this.opts.triggerOnDelete && (event.inputType === 'deleteContentBackward' || event.inputType === 'deleteContentForward')) {
 			return false
 		}
 
-		this.masking(event)
+		this.masking()
 	}
 }
 

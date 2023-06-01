@@ -16,13 +16,13 @@
 [xo]:              https://github.com/sindresorhus/xo
 
 
-The simple and tiny script for input mask
+The simple and tiny script for input mask.
 
 
 ## Install
 
 ```
-$ npm i -S @tadashi/mask
+$ npm i @tadashi/mask
 ```
 
 
@@ -36,11 +36,22 @@ Codepen example: https://codepen.io/lagden/pen/XzLYJE
 <script type="module">
   import Mask from 'https://unpkg.com/@tadashi/mask@{version}/src/mask.js'
 
-  const mask = new Mask(telefone)
+  const maskTelefone = new Mask(telefone)
 </script>
 ```
 
 
+## Team
+
+[<img src="https://avatars.githubusercontent.com/u/130963?s=390" alt="Lagden" width="90">](https://github.com/lagden)
+[<img src="https://avatars.githubusercontent.com/u/8677724?s=390" alt="JonatasAmaral" width="90">](https://github.com/JonatasAmaral)
+
+
+## Donate ❤️
+
+- BTC: bc1q7famhuj5f25n6qvlm3sssnymk2qpxrfwpyq7g4
+
+
 ## License
 
-MIT © Thiago Lagden
+MIT © [Thiago Lagden](https://github.com/lagden)

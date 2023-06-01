@@ -32,6 +32,7 @@ rules:
   spaced-comment: off
   padding-line-between-statements: off
   no-undef-init: off
+  # no-empty-static-block: off
   unicorn/filename-case: off
   unicorn/prevent-abbreviations: off
   unicorn/no-reduce: off

@@ -1,6 +1,7 @@
 /* eslint-disable no-new */
 /* eslint-disable no-undef */
 
+import {setTimeout} from 'node:timers/promises'
 import {
 	expect,
 	test,
@@ -13,6 +14,12 @@ beforeEach(() => {
 	document.body.innerHTML = `
 		<input id="telefone" type="text" data-mask="(99) 9-9999-9999">
 		<input id="placa" type="text">
+		<input id="doc" type="text">
+		<input id="currency" type="text" data-mask="9.999,99">
+		<select id="tipo">
+			<option selected value="BRL">BRL</option>
+			<option value="USD">USD</option>
+		</select>
 	`
 })
 
@@ -46,6 +53,80 @@ test('input init empty', () => {
 	input.value = ''
 	const mask = new Mask(input, {init: true})
 	expect(input.value).toBe('')
+	mask.destroy()
+})
+
+test('input arr', () => {
+	const input = document.querySelector('#doc')
+	input.value = ''
+	const mask = new Mask(input, {
+		mask: ['999.999.999-99', '99.999.999/9999-99'],
+		maskSwapLength: 14,
+		triggerOnDelete: true,
+		keyEvent: 'keyup',
+	})
+	for (const char of '10704') {
+		input.value += char
+		simulant.fire(input, 'keyup')
+	}
+	expect(input.value).toBe('107.04')
+
+	for (const char of '218000180') {
+		input.value += char
+		simulant.fire(input, 'keyup')
+	}
+	expect(input.value).toBe('10.704.218/0001-80')
+	mask.destroy()
+})
+
+test('input fn', () => {
+	const input = document.querySelector('#doc')
+	input.value = ''
+	const mask = new Mask(input, {
+		mask(el) {
+			if (el.value.replaceAll(/\D/g, '').length > 11) {
+				return '99.999.999/9999-99'
+			}
+			return '999.999.999-999'
+		},
+		triggerOnDelete: true,
+		keyEvent: 'keyup',
+		maskSwapLength: undefined,
+	})
+	for (const char of '10704') {
+		input.value += char
+		simulant.fire(input, 'keyup')
+	}
+	expect(input.value).toBe('107.04')
+
+	for (const char of '218000180') {
+		input.value += char
+		simulant.fire(input, 'keyup')
+	}
+	expect(input.value).toBe('10.704.218/0001-80')
+	mask.destroy()
+})
+
+test('input on the fly', async () => {
+	const tipo = document.querySelector('#tipo')
+	const input = document.querySelector('#currency')
+
+	tipo.addEventListener('change', () => {
+		input.dataset.mask = tipo.value === 'BRL' ? '9.999,99' : '9,999.99'
+	})
+
+	input.value = '100099'
+	const mask = new Mask(input, {
+		dynamicDataMask: true,
+		init: true,
+	})
+	expect(input.value).toBe('1.000,99')
+
+	tipo.value = 'USD'
+	simulant.fire(tipo, 'change')
+	await setTimeout(1000)
+
+	expect(input.value).toBe('1,000.99')
 	mask.destroy()
 })
 
