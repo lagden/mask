@@ -1,15 +1,3 @@
-/**
- * UUID generator
- * @return {string} returns the hash
- */
-function _id() {
-	/* istanbul ignore next */
-	if (globalThis?.crypto?.randomUUID) {
-		return globalThis.crypto.randomUUID().replaceAll('-', '')
-	}
-	return Number(Math.random()).toString(16).slice(2, 8) + Date.now().toString(16)
-}
-
 const map = new Map()
 map.set('9', /\d/)
 map.set('A', /[\dA-Za-z]/)
@@ -18,26 +6,26 @@ map.set('S', /[A-Za-z]/)
 const instances = new Map()
 const GUID = Symbol('GUID')
 
-/** class Mask */
+/**
+ * Represents a Mask object used for input masking.
+ */
 class Mask {
 	/**
-	 * Get Mask instance
-	 * @param {HTMLInputElement} input - element with Mask instanced
-	 * @return {Mask|undefined} returns instance or undefined
-	 * @memberof Mask
-	 * @static
+	 * Retrieves the instance of Mask associated with the given input element.
+	 *
+	 * @param {HTMLInputElement} input - The input element.
+	 * @returns {Mask|undefined} The Mask instance associated with the input element, or undefined if not found.
 	 */
 	static data(input) {
 		return instances.has(input[GUID]) && instances.get(input[GUID])
 	}
 
 	/**
-	 * Masking a value
-	 * @param {string|number} _value - value
-	 * @param {string} _mask - mask format
-	 * @return {string} returns the masked value
-	 * @memberof Mask
-	 * @static
+	 * Applies masking to the given value using the provided mask.
+	 *
+	 * @param {string} _value - The value to be masked.
+	 * @param {string} _mask - The mask pattern.
+	 * @returns {string} The masked value.
 	 */
 	static masking(_value, _mask) {
 		const mask = String(_mask)
@@ -65,27 +53,20 @@ class Mask {
 	}
 
 	/**
-	 * @typedef {(input: HTMLInputElement, event?: Event)=>string} DynamicMask
-	 * - A function that returns the mask string on the fly.
-	 * It runs on each event, to evaluate new mask before applying it.
-	 *
-	 * The given function receives the associated input as first argument,
-	 * and the event triggering the mask as the second,
-	 *
-	 * _NOTE: no event is sent on **initial** evaluation (if constructor's `opts.init` is set to true)_
-	 *
-	 *
-	 * @typedef {{
-	 *  keyEvent: keyof HTMLElementEventMap,
-	 *  triggerOnBlur: Boolean,
-	 *  triggerOnDelete: Boolean,
-	 *  init: Boolean,
-	 *  dynamicDataMask: Boolean,
-	 *  mask: string | DynamicMask | undefined,
-	 *  maskSwapLength: number | undefined
-	 * }} Opts
-	 *
-	 * @type {Opts}
+	 * Options object for configuring the Mask class.
+	 * @typedef {Object} MaskOptions
+	 * @property {string} [keyEvent='input'] - The key event to listen for (e.g., 'input', 'keyup').
+	 * @property {boolean} [triggerOnBlur=false] - Whether to trigger masking on the blur event.
+	 * @property {boolean} [triggerOnDelete=false] - Whether to trigger masking on delete events (e.g., 'deleteContentBackward', 'deleteContentForward').
+	 * @property {boolean} [dynamicDataMask=false] - Whether to dynamically update the mask based on the input's data-mask attribute.
+	 * @property {boolean} [init=false] - Whether to apply masking on initialization.
+	 * @property {string|function} [mask=undefined] - The mask pattern or a function returning the mask pattern based on the input element.
+	 * @property {number} [maskSwapLength=undefined] - The length at which to swap the mask pattern when using an array of masks.
+	 */
+
+	/**
+	 * The options object for configuring the Mask class.
+	 * @type {MaskOptions}
 	 */
 	opts = {
 		keyEvent: 'input',
@@ -103,9 +84,14 @@ class Mask {
 	#dynamicMask = undefined
 
 	/**
-	* @param {HTMLInputElement} input
-	* @param {Partial<Opts>} opts
-	* */
+	 * Constructs a new Mask instance.
+	 *
+	 * @param {HTMLInputElement} input - The input element to apply the mask to.
+	 * @param {MaskOptions} [opts] - The options for the Mask instance.
+	 * @throws {TypeError} If the input parameter is not an instance of HTMLInputElement.
+	 * @throws {TypeError} If the input has already been instanced.
+	 * @throws {Error} If the mask is empty.
+	 */
 	constructor(input, opts = {}) {
 		// satityze user's opts
 		for (const key of Object.keys(opts)) {
@@ -137,7 +123,7 @@ class Mask {
 
 		// Initialize
 		if (this.opts.init) {
-			this.masking()
+			this.#masking()
 		}
 
 		// Listener
@@ -158,7 +144,7 @@ class Mask {
 				}
 
 				this.mask = item.target.dataset.mask
-				this.masking()
+				this.#masking()
 			})
 
 			this.maskObserver.observe(this.input, {
@@ -167,10 +153,28 @@ class Mask {
 		}
 
 		// Storage instance
-		this.input[GUID] = _id()
+		this.input[GUID] = this.#id()
 		instances.set(this.input[GUID], this)
 	}
 
+	/**
+	 * Generates a unique ID.
+	 * @private
+	 * @returns {string} The generated unique ID.
+	 */
+	#id() {
+		/* istanbul ignore next */
+		if (globalThis?.crypto?.randomUUID) {
+			return globalThis.crypto.randomUUID().replaceAll('-', '')
+		}
+		return Number(Math.random()).toString(16).slice(2, 8) + Date.now().toString(16)
+	}
+
+	/**
+	 * Evaluates the mask based on the provided options.
+	 *
+	 * @private
+	 */
 	#evaluateMask() {
 		if (this.#dynamicMask === false) {
 			return
@@ -193,11 +197,35 @@ class Mask {
 		this.mask = typeof this.opts.mask === 'string' ? this.opts.mask : this.input.dataset.mask
 	}
 
-	masking() {
+	/**
+	 * Applies the mask to the input element's value.
+	 *
+	 * @private
+	 */
+	#masking() {
 		this.#evaluateMask()
 		this.input.value = Mask.masking(this.input.value, this.mask)
 	}
 
+	/**
+	 * Handles events triggered on the input element.
+	 *
+	 * @private
+	 * @param {Event} event - The event object.
+	 * @returns {boolean} Whether to continue processing the event.
+	 */
+	handleEvent(event) {
+		/* istanbul ignore next */
+		if (!this.opts.triggerOnDelete && (event.inputType === 'deleteContentBackward' || event.inputType === 'deleteContentForward')) {
+			return false
+		}
+
+		this.#masking()
+	}
+
+	/**
+	 * Destroys the Mask instance, removing event listeners and cleaning up references.
+	 */
 	destroy() {
 		for (const _event of this.events) {
 			this.input.removeEventListener(_event, this)
@@ -210,18 +238,6 @@ class Mask {
 		if (instances.has(this.input[GUID])) {
 			instances.delete(this.input[GUID])
 		}
-	}
-
-	/**
-	 * @param {InputEvent} event
-	 * */
-	handleEvent(event) {
-		/* istanbul ignore next */
-		if (!this.opts.triggerOnDelete && (event.inputType === 'deleteContentBackward' || event.inputType === 'deleteContentForward')) {
-			return false
-		}
-
-		this.masking()
 	}
 }
 
