@@ -24,7 +24,10 @@
     "license",
     "README.md"
   ],
-  "repository": "lagden/mask",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lagden/mask.git"
+  },
   "scripts": {
     "eslint": "eslint --config .eslintrc.yml --ext .js --ignore-path .gitignore .",
     "pretest": "npm run eslint",
