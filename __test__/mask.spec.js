@@ -61,7 +61,6 @@ test('input arr', () => {
 	input.value = ''
 	const mask = new Mask(input, {
 		mask: ['999.999.999-99', '99.999.999/9999-99'],
-		maskSwapLength: 14,
 		triggerOnDelete: true,
 		keyEvent: 'keyup',
 	})
@@ -91,7 +90,6 @@ test('input fn', () => {
 		},
 		triggerOnDelete: true,
 		keyEvent: 'keyup',
-		maskSwapLength: undefined,
 	})
 	for (const char of '10704') {
 		input.value += char
@@ -172,6 +170,15 @@ test('instance and destroy', () => {
 	expect(mask).toEqual(_mask)
 	mask.destroy()
 	_mask.destroy()
+})
+
+test('instance getUnmasked', () => {
+	const input = document.querySelector('#telefone')
+	input.value = '11968'
+	const mask = new Mask(input, {init: true})
+	expect(input.value).toBe('(11) 9-68')
+	expect(mask.getUnmasked()).toBe('11968')
+	mask.destroy()
 })
 
 test('throws instanced', () => {

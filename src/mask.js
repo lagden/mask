@@ -1,31 +1,40 @@
+/**
+ * Represents a masking utility to format input based on a specified mask.
+ */
 const map = new Map()
 map.set('9', /\d/)
 map.set('A', /[\dA-Za-z]/)
 map.set('S', /[A-Za-z]/)
 
+/**
+ * Represents a collection of Mask instances associated with input elements.
+ */
 const instances = new Map()
+
+/**
+ * A symbol to uniquely identify Mask instances.
+ * @type {symbol}
+ */
 const GUID = Symbol('GUID')
 
 /**
- * Represents a Mask object used for input masking.
+ * The Mask class provides methods for input masking and management.
  */
 class Mask {
 	/**
-	 * Retrieves the instance of Mask associated with the given input element.
-	 *
-	 * @param {HTMLInputElement} input - The input element.
-	 * @returns {Mask|undefined} The Mask instance associated with the input element, or undefined if not found.
+	 * Checks if a Mask instance exists for the given input element.
+	 * @param {HTMLInputElement} input - The input element to check.
+	 * @returns {Mask|null} The Mask instance associated with the input element, or null if not found.
 	 */
 	static data(input) {
 		return instances.has(input[GUID]) && instances.get(input[GUID])
 	}
 
 	/**
-	 * Applies masking to the given value using the provided mask.
-	 *
-	 * @param {string} _value - The value to be masked.
-	 * @param {string} _mask - The mask pattern.
-	 * @returns {string} The masked value.
+	 * Mask the input value according to the specified mask pattern.
+	 * @param {string} _value - The input value to be masked.
+	 * @param {string} _mask - The mask pattern to apply.
+	 * @returns {string} The masked input value.
 	 */
 	static masking(_value, _mask) {
 		const mask = String(_mask)
@@ -61,30 +70,31 @@ class Mask {
 	 * @property {boolean} [dynamicDataMask=false] - Whether to dynamically update the mask based on the input's data-mask attribute.
 	 * @property {boolean} [init=false] - Whether to apply masking on initialization.
 	 * @property {string|function} [mask=undefined] - The mask pattern or a function returning the mask pattern based on the input element.
-	 * @property {number} [maskSwapLength=undefined] - The length at which to swap the mask pattern when using an array of masks.
 	 */
 
 	/**
 	 * The options object for configuring the Mask class.
+	 * @private
 	 * @type {MaskOptions}
 	 */
-	opts = {
+	#opts = {
 		keyEvent: 'input',
 		triggerOnBlur: false,
 		triggerOnDelete: false, // default to false for backward compatibility
 		dynamicDataMask: false,
 		init: false,
 		mask: undefined,
-		maskSwapLength: undefined,
 	}
 
 	/**
-	* @type {Boolean | undefined}
-	*/
-	#dynamicMask = undefined
+	 * The dynamically generated mask pattern.
+	 * @private
+	 * @type {string|undefined}
+	 */
+	#dynamicMask
 
 	/**
-	 * Constructs a new Mask instance.
+	 * Constructs a new Mask instance for the given input element.
 	 *
 	 * @param {HTMLInputElement} input - The input element to apply the mask to.
 	 * @param {MaskOptions} [opts] - The options for the Mask instance.
@@ -93,12 +103,14 @@ class Mask {
 	 * @throws {Error} If the mask is empty.
 	 */
 	constructor(input, opts = {}) {
-		// satityze user's opts
-		for (const key of Object.keys(opts)) {
-			if (opts[key] === null || opts[key] === undefined) {
-				continue
+		// sanitize opts
+		this.opts = {
+			...this.#opts,
+		}
+		for (const key of Object.keys(this.#opts)) {
+			if (opts?.[key]) {
+				this.opts[key] = opts[key]
 			}
-			this.opts[key] = opts[key]
 		}
 
 		if (input instanceof globalThis.HTMLInputElement === false) {
@@ -158,7 +170,15 @@ class Mask {
 	}
 
 	/**
-	 * Generates a unique ID.
+	 * Get the unmasked input value (removes non-digit and non-alphabetic characters).
+	 * @returns {string} The unmasked input value.
+	 */
+	getUnmasked() {
+		return String(this.input.value).replaceAll(/[^\dA-Za-z]/g, '')
+	}
+
+	/**
+	 * Generates a unique ID for the instance.
 	 * @private
 	 * @returns {string} The generated unique ID.
 	 */
@@ -186,8 +206,10 @@ class Mask {
 			return
 		}
 
-		if (Array.isArray(this.opts.mask) && typeof this.opts.maskSwapLength === 'number') {
-			const pos = this.input.value.length > this.opts.maskSwapLength ? 1 : 0
+		if (Array.isArray(this.opts.mask)) {
+			const totalValue = [...String(this.input.value).replaceAll(/[^\dA-Za-z]/g, '')]?.length
+			const total0 = [...String(this.opts.mask[0]).replaceAll(/[^\dA-Za-z]/g, '')]?.length
+			const pos = totalValue > total0 ? 1 : 0
 			this.mask = this.opts.mask[pos]
 			this.#dynamicMask = true
 			return
@@ -227,6 +249,8 @@ class Mask {
 	 * Destroys the Mask instance, removing event listeners and cleaning up references.
 	 */
 	destroy() {
+		this.input.value = this.getUnmasked()
+
 		for (const _event of this.events) {
 			this.input.removeEventListener(_event, this)
 		}
