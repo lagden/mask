@@ -1,44 +1,60 @@
 {
-  "name": "@tadashi/mask",
-  "version": "4.2.0",
-  "description": "The simple and tiny script for input mask",
-  "keywords": [
-    "mask",
-    "input",
-    "tiny"
-  ],
-  "bug": {
-    "url": "https://github.com/lagden/mask",
-    "email": "lagden@gmail.com"
-  },
-  "license": "MIT",
-  "author": {
-    "name": "Thiago Lagden",
-    "email": "lagden@gmail.com"
-  },
-  "type": "module",
-  "main": "./src/mask.js",
-  "browser": "./src/mask.js",
-  "files": [
-    "src",
-    "license",
-    "README.md"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lagden/mask.git"
-  },
-  "scripts": {
-    "eslint": "eslint --config .eslintrc.yml --ext .js --ignore-path .gitignore .",
-    "pretest": "npm run eslint",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest test --coverage --coverageReporters=lcov --coverageReporters=text",
-    "prepublishOnly": "npm test"
-  },
-  "devDependencies": {
-    "eslint": "8.52.0",
-    "eslint-plugin-unicorn": "48.0.1",
-    "jest": "29.7.0",
-    "jest-environment-jsdom": "29.7.0",
-    "simulant": "0.2.2"
-  }
+	"name": "@tadashi/mask",
+	"version": "4.3.0",
+	"description": "The simple and tiny script for input mask",
+	"keywords": [
+		"mask",
+		"input",
+		"tiny"
+	],
+	"bug": {
+		"url": "https://github.com/lagden/mask",
+		"email": "lagden@gmail.com"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Thiago Lagden",
+		"email": "lagden@gmail.com"
+	},
+	"type": "module",
+	"main": "dist/mask.cjs",
+	"types": "types/mask.d.ts",
+	"exports": {
+		".": {
+			"types": "./types/mask.d.ts",
+			"browser": "./src/mask.js",
+			"import": "./src/mask.js",
+			"require": "./dist/mask.cjs"
+		},
+		"./package.json": "./package.json"
+	},
+	"files": [
+		"src",
+		"license",
+		"README.md"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/lagden/mask.git"
+	},
+	"scripts": {
+		"tsc": "tsc",
+		"rollup": "rollup -c",
+		"lint": "deno lint",
+		"check": "deno fmt --check",
+		"format": "deno fmt",
+		"pretest": "run-s check lint tsc",
+		"posttest": "run-s rollup",
+		"test": "c8 --reporter=text-summary --reporter=lcovonly --reporter=cobertura node --test test/*.spec.js"
+	},
+	"devDependencies": {
+		"@testing-library/user-event": "14.6.1",
+		"jsdom": "26.1.0",
+		"@types/node": "24.0.0",
+		"c8": "10.1.3",
+		"npm-run-all": "4.1.5",
+		"typescript": "5.8.3",
+		"@rollup/plugin-commonjs": "28.0.3",
+		"rollup": "4.43.0"
+	}
 }
