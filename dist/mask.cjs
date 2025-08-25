@@ -31,34 +31,58 @@ class Mask {
 	}
 
 	/**
-	 * Mask the input value according to the specified mask pattern.
+	 * Core method to mask the input value according to the specified mask pattern.
 	 * @param {string} _value - The input value to be masked.
 	 * @param {string} _mask - The mask pattern to apply.
 	 * @returns {string} The masked input value.
 	 */
-	static masking(_value, _mask) {
+	static core(_value, _mask) {
 		const mask = String(_mask);
-		const value = String(_value).replaceAll(/[^\dA-Za-z]/g, '');
+		const inputValue = String(_value);
 
-		const res = [];
-		let cc = 0;
+		const res = new Array(mask.length);
+		let valueIndex = 0;
 
-		for (let i = 0; i < mask.length; i++) {
-			const char = mask.charAt(i);
-			if (value.length > cc) {
-				if (map.has(char)) {
-					if (map.get(char).test(value.charAt(cc))) {
-						res.push(value.charAt(cc++));
-					} else {
-						break
+		for (let i = 0; i < mask.length && valueIndex < inputValue.length; i++) {
+			const maskChar = mask[i];
+
+			if (map.has(maskChar)) {
+				// Procura próximo caractere válido no input
+				while (valueIndex < inputValue.length) {
+					const inputChar = inputValue[valueIndex];
+
+					// Se não é alfanumérico, pula
+					if (!/[\dA-Za-z]/.test(inputChar)) {
+						valueIndex++;
+						continue
 					}
-				} else {
-					res.push(char);
+
+					// Testa se o caractere satisfaz a máscara
+					if (map.get(maskChar).test(inputChar)) {
+						res.push(inputChar);
+						valueIndex++;
+						break
+					} else {
+						return res.join('') // Para se não atende o padrão
+					}
 				}
+			} else {
+				res.push(maskChar); // Caractere literal da máscara
 			}
 		}
 
 		return res.join('')
+	}
+
+	/**
+	 * Mask the input value according to the specified mask pattern.
+	 * @param {string} _value - The input value to be masked.
+	 * @param {string} _mask - The mask pattern to apply.
+	 * @returns {string} The masked input value.
+	 * @deprecated Use core method instead. This is an alias for backward compatibility.
+	 */
+	static masking(_value, _mask) {
+		return Mask.core(_value, _mask)
 	}
 
 	/**
@@ -219,7 +243,7 @@ class Mask {
 	 */
 	#masking() {
 		this.#evaluateMask();
-		this.input.value = Mask.masking(this.input.value, this.mask);
+		this.input.value = Mask.core(this.input.value, this.mask);
 	}
 
 	/**

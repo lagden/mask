@@ -10,10 +10,18 @@ declare class Mask {
      */
     static data(input: HTMLInputElement): Mask | null;
     /**
+     * Core method to mask the input value according to the specified mask pattern.
+     * @param {string} _value - The input value to be masked.
+     * @param {string} _mask - The mask pattern to apply.
+     * @returns {string} The masked input value.
+     */
+    static core(_value: string, _mask: string): string;
+    /**
      * Mask the input value according to the specified mask pattern.
      * @param {string} _value - The input value to be masked.
      * @param {string} _mask - The mask pattern to apply.
      * @returns {string} The masked input value.
+     * @deprecated Use core method instead. This is an alias for backward compatibility.
      */
     static masking(_value: string, _mask: string): string;
     /**
