@@ -1,6 +1,6 @@
 {
 	"name": "@tadashi/mask",
-	"version": "4.5.0",
+	"version": "4.4.0",
 	"description": "The simple and tiny script for input mask",
 	"keywords": [
 		"mask",
@@ -30,6 +30,8 @@
 	},
 	"files": [
 		"src",
+		"dist",
+		"types",
 		"license",
 		"README.md"
 	],
