@@ -37,58 +37,44 @@ declare class Mask {
         /**
          * - The key event to listen for (e.g., 'input', 'keyup').
          */
-        keyEvent?: string;
+        keyEvent?: string | undefined;
         /**
          * - Whether to trigger masking on the blur event.
          */
-        triggerOnBlur?: boolean;
+        triggerOnBlur?: boolean | undefined;
         /**
          * - Whether to trigger masking on delete events (e.g., 'deleteContentBackward', 'deleteContentForward').
          */
-        triggerOnDelete?: boolean;
+        triggerOnDelete?: boolean | undefined;
         /**
          * - Whether to dynamically update the mask based on the input's data-mask attribute.
          */
-        dynamicDataMask?: boolean;
+        dynamicDataMask?: boolean | undefined;
         /**
          * - Whether to apply masking on initialization.
          */
-        init?: boolean;
+        init?: boolean | undefined;
         /**
-         * - The mask pattern or a function returning the mask pattern based on the input element.
+         * - The mask pattern, an array of mask patterns, or a function returning the mask pattern based on the input element.
          */
-        mask?: string | Function;
+        mask?: string | string[] | ((input: HTMLInputElement) => string) | undefined;
     });
+    /**
+     * The current mask pattern applied to the input.
+     * @type {string|undefined}
+     */
+    mask: string | undefined;
     opts: {
-        /**
-         * - The key event to listen for (e.g., 'input', 'keyup').
-         */
-        keyEvent?: string;
-        /**
-         * - Whether to trigger masking on the blur event.
-         */
-        triggerOnBlur?: boolean;
-        /**
-         * - Whether to trigger masking on delete events (e.g., 'deleteContentBackward', 'deleteContentForward').
-         */
-        triggerOnDelete?: boolean;
-        /**
-         * - Whether to dynamically update the mask based on the input's data-mask attribute.
-         */
-        dynamicDataMask?: boolean;
-        /**
-         * - Whether to apply masking on initialization.
-         */
-        init?: boolean;
-        /**
-         * - The mask pattern or a function returning the mask pattern based on the input element.
-         */
-        mask?: string | Function;
+        keyEvent: string;
+        triggerOnBlur: boolean;
+        triggerOnDelete: boolean;
+        dynamicDataMask: boolean;
+        init: boolean;
+        mask: string | string[] | ((input: HTMLInputElement) => string) | undefined;
     };
     events: Set<any>;
     input: HTMLInputElement;
-    maskObserver: MutationObserver;
-    mask: any;
+    maskObserver: MutationObserver | undefined;
     /**
      * Get the unmasked input value (removes non-digit and non-alphabetic characters).
      * @returns {string} The unmasked input value.

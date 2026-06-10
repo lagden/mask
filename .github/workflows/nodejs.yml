@@ -26,16 +26,13 @@ jobs:
       - name: Install Deno
         run: curl -fsSL https://deno.land/install.sh | sh
 
-      - name: Install pnpm
-        run: npm i -g pnpm
-
       - name: Install dependencies
-        run: pnpm install
+        run: deno install
 
       - name: Run test
         run: npm test
 
       - name: Coveralls
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

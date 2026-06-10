@@ -1,21 +1,57 @@
 /**
  * Represents a masking utility to format input based on a specified mask.
  */
-const map = new Map();
-map.set('9', /\d/);
-map.set('A', /[\dA-Za-z]/);
-map.set('S', /[A-Za-z]/);
 
 /**
- * Represents a collection of Mask instances associated with input elements.
+ * Regular expression matching characters that are not alphanumeric.
+ * @type {RegExp}
  */
-const instances = new Map();
+const RE_NOT_ALNUM = /[^\dA-Za-z]/g;
 
 /**
- * A symbol to uniquely identify Mask instances.
- * @type {symbol}
+ * Removes all non-alphanumeric characters from a value.
+ * @param {*} value - The value to strip.
+ * @returns {string} The value containing only alphanumeric characters.
  */
-const GUID = Symbol('GUID');
+const stripNonAlnum = (value) => String(value).replaceAll(RE_NOT_ALNUM, '');
+
+/**
+ * Checks if a character is a digit.
+ * @param {string} c - The character to check.
+ * @returns {boolean} Whether the character is a digit.
+ */
+const isDigit = (c) => c >= '0' && c <= '9';
+
+/**
+ * Checks if a character is a letter.
+ * @param {string} c - The character to check.
+ * @returns {boolean} Whether the character is a letter.
+ */
+const isLetter = (c) => (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
+
+/**
+ * Checks if a character is alphanumeric.
+ * @param {string} c - The character to check.
+ * @returns {boolean} Whether the character is alphanumeric.
+ */
+const isAlnum = (c) => isDigit(c) || isLetter(c);
+
+/**
+ * Maps mask tokens to their character validators.
+ * @type {Map<string, (c: string) => boolean>}
+ */
+const tokens = new Map([
+	['9', isDigit],
+	['A', isAlnum],
+	['S', isLetter],
+]);
+
+/**
+ * A collection of Mask instances associated with input elements.
+ * Weakly keyed by the input element so instances can be garbage collected.
+ * @type {WeakMap<HTMLInputElement, Mask>}
+ */
+const instances = new WeakMap();
 
 /**
  * The Mask class provides methods for input masking and management.
@@ -27,7 +63,7 @@ class Mask {
 	 * @returns {Mask|null} The Mask instance associated with the input element, or null if not found.
 	 */
 	static data(input) {
-		return instances.has(input[GUID]) && instances.get(input[GUID])
+		return instances.get(input) ?? null
 	}
 
 	/**
@@ -40,38 +76,39 @@ class Mask {
 		const mask = String(_mask);
 		const inputValue = String(_value);
 
-		const res = new Array(mask.length);
+		let res = '';
 		let valueIndex = 0;
 
 		for (let i = 0; i < mask.length && valueIndex < inputValue.length; i++) {
 			const maskChar = mask[i];
+			const check = tokens.get(maskChar);
 
-			if (map.has(maskChar)) {
+			if (check) {
 				// Procura próximo caractere válido no input
 				while (valueIndex < inputValue.length) {
 					const inputChar = inputValue[valueIndex];
 
 					// Se não é alfanumérico, pula
-					if (!/[\dA-Za-z]/.test(inputChar)) {
+					if (!isAlnum(inputChar)) {
 						valueIndex++;
 						continue
 					}
 
 					// Testa se o caractere satisfaz a máscara
-					if (map.get(maskChar).test(inputChar)) {
-						res.push(inputChar);
+					if (check(inputChar)) {
+						res += inputChar;
 						valueIndex++;
 						break
 					} else {
-						return res.join('') // Para se não atende o padrão
+						return res // Para se não atende o padrão
 					}
 				}
 			} else {
-				res.push(maskChar); // Caractere literal da máscara
+				res += maskChar; // Caractere literal da máscara
 			}
 		}
 
-		return res.join('')
+		return res
 	}
 
 	/**
@@ -93,12 +130,11 @@ class Mask {
 	 * @property {boolean} [triggerOnDelete=false] - Whether to trigger masking on delete events (e.g., 'deleteContentBackward', 'deleteContentForward').
 	 * @property {boolean} [dynamicDataMask=false] - Whether to dynamically update the mask based on the input's data-mask attribute.
 	 * @property {boolean} [init=false] - Whether to apply masking on initialization.
-	 * @property {string|function} [mask=undefined] - The mask pattern or a function returning the mask pattern based on the input element.
+	 * @property {string|string[]|((input: HTMLInputElement) => string)} [mask=undefined] - The mask pattern, an array of mask patterns, or a function returning the mask pattern based on the input element.
 	 */
 
 	/**
 	 * The options object for configuring the Mask class.
-	 * @type {MaskOptions}
 	 */
 	#opts = {
 		keyEvent: 'input',
@@ -106,7 +142,7 @@ class Mask {
 		triggerOnDelete: false, // default to false for backward compatibility
 		dynamicDataMask: false,
 		init: false,
-		mask: undefined,
+		mask: /** @type {MaskOptions['mask']} */ (undefined),
 	}
 
 	/**
@@ -114,6 +150,18 @@ class Mask {
 	 * @type {boolean|undefined}
 	 */
 	#dynamicMask
+
+	/**
+	 * The alphanumeric length of the first mask when using an array of masks.
+	 * @type {number|undefined}
+	 */
+	#mask0Len
+
+	/**
+	 * The current mask pattern applied to the input.
+	 * @type {string|undefined}
+	 */
+	mask
 
 	/**
 	 * Constructs a new Mask instance for the given input element.
@@ -129,9 +177,10 @@ class Mask {
 		this.opts = {
 			...this.#opts,
 		};
-		for (const key of Object.keys(this.#opts)) {
-			if (opts?.[key]) {
-				this.opts[key] = opts[key];
+		const sanitized = /** @type {Record<string, unknown>} */ (this.opts);
+		for (const key of /** @type {(keyof MaskOptions)[]} */ (Object.keys(this.#opts))) {
+			if (opts?.[key] !== undefined) {
+				sanitized[key] = opts[key];
 			}
 		}
 
@@ -187,8 +236,7 @@ class Mask {
 		}
 
 		// Storage instance
-		this.input[GUID] = this.#id();
-		instances.set(this.input[GUID], this);
+		instances.set(this.input, this);
 	}
 
 	/**
@@ -196,19 +244,7 @@ class Mask {
 	 * @returns {string} The unmasked input value.
 	 */
 	getUnmasked() {
-		return String(this.input.value).replaceAll(/[^\dA-Za-z]/g, '')
-	}
-
-	/**
-	 * Generates a unique ID for the instance.
-	 * @returns {string} The generated unique ID.
-	 */
-	#id() {
-		/* istanbul ignore next */
-		if (globalThis?.crypto?.randomUUID) {
-			return globalThis.crypto.randomUUID().replaceAll('-', '')
-		}
-		return Number(Math.random()).toString(16).slice(2, 8) + Date.now().toString(16)
+		return stripNonAlnum(this.input.value)
 	}
 
 	/**
@@ -226,9 +262,9 @@ class Mask {
 		}
 
 		if (Array.isArray(this.opts.mask)) {
-			const totalValue = [...String(this.input.value).replaceAll(/[^\dA-Za-z]/g, '')]?.length;
-			const total0 = [...String(this.opts.mask[0]).replaceAll(/[^\dA-Za-z]/g, '')]?.length;
-			const pos = totalValue > total0 ? 1 : 0;
+			const totalValue = stripNonAlnum(this.input.value).length;
+			this.#mask0Len ??= stripNonAlnum(this.opts.mask[0]).length;
+			const pos = totalValue > this.#mask0Len ? 1 : 0;
 			this.mask = this.opts.mask[pos];
 			this.#dynamicMask = true;
 			return
@@ -243,7 +279,10 @@ class Mask {
 	 */
 	#masking() {
 		this.#evaluateMask();
-		this.input.value = Mask.core(this.input.value, this.mask);
+		const value = Mask.core(this.input.value, /** @type {string} */ (this.mask));
+		if (value !== this.input.value) {
+			this.input.value = value;
+		}
 	}
 
 	/**
@@ -260,6 +299,7 @@ class Mask {
 		}
 
 		this.#masking();
+		return true
 	}
 
 	/**
@@ -276,9 +316,7 @@ class Mask {
 			this.maskObserver.disconnect();
 		}
 
-		if (instances.has(this.input[GUID])) {
-			instances.delete(this.input[GUID]);
-		}
+		instances.delete(this.input);
 	}
 }
 

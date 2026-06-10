@@ -2,7 +2,6 @@
 /* eslint-disable no-undef */
 
 import { setTimeout } from 'node:timers/promises'
-// import userEvent from '@testing-library/user-event'
 import { JSDOM } from 'jsdom'
 import assert from 'node:assert/strict'
 import { beforeEach, describe, it } from 'node:test'
@@ -40,6 +39,11 @@ describe('Mask', () => {
 	it('static mask', () => {
 		const v = Mask.masking('ABC12', 'SSS-9999')
 		assert.strictEqual(v, 'ABC-12')
+	})
+
+	it('static mask lowercase', () => {
+		const v = Mask.core('abc12', 'SSS-9999')
+		assert.strictEqual(v, 'abc-12')
 	})
 
 	it('input', () => {
@@ -229,30 +233,6 @@ describe('Mask', () => {
 		// The mask should remain the same
 		assert.strictEqual(mask.mask, '9.999,99')
 
-		mask.destroy()
-	})
-
-	it('crypto fallback when randomUUID not available', () => {
-		// Store original crypto
-		const originalCrypto = globalThis.crypto
-
-		// Mock crypto to be undefined
-		Object.defineProperty(globalThis, 'crypto', {
-			value: undefined,
-			configurable: true,
-		})
-
-		const input = document.querySelector('#telefone')
-		const mask = new Mask(input)
-
-		// Just verify the instance was created successfully
-		assert.ok(mask instanceof Mask)
-
-		// Restore original crypto
-		Object.defineProperty(globalThis, 'crypto', {
-			value: originalCrypto,
-			configurable: true,
-		})
 		mask.destroy()
 	})
 
