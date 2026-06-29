@@ -4,8 +4,8 @@
 
 [npm-img]: https://img.shields.io/npm/v/@tadashi/mask.svg
 [npm]: https://www.npmjs.com/package/@tadashi/mask
-[ci-img]: https://github.com/lagden/mask/actions/workflows/nodejs.yml/badge.svg
-[ci]: https://github.com/lagden/mask/actions/workflows/nodejs.yml
+[ci-img]: https://github.com/lagden/mask/actions/workflows/ci.yml/badge.svg
+[ci]: https://github.com/lagden/mask/actions/workflows/ci.yml
 [coveralls-img]: https://coveralls.io/repos/github/lagden/mask/badge.svg?branch=main
 [coveralls]: https://coveralls.io/github/lagden/mask?branch=main
 
@@ -93,6 +93,18 @@ Mask.core('ABC12', 'SSS-9999') // => 'ABC-12'
 
 - `getUnmasked()` — returns the input value without the mask literals.
 - `destroy()` — removes listeners, unbinds the instance and restores the unmasked value.
+
+## Development
+
+Requires [Deno](https://deno.land/).
+
+```
+deno task test      # fmt check → lint → tsc → test → rollup
+deno task format    # auto-format
+deno task lint      # lint
+deno task tsc       # type-check and emit types/mask.d.ts
+deno task rollup    # build dist/mask.cjs
+```
 
 ## Team
 
