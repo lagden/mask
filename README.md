@@ -34,9 +34,9 @@ The mask can be set via the `data-mask` attribute:
 <input id="telefone" type="text" data-mask="(99) 9-9999-9999">
 
 <script type="module">
-	import Mask from 'https://unpkg.com/@tadashi/mask@{version}/src/mask.js'
+import Mask from 'https://unpkg.com/@tadashi/mask@{version}/src/mask.js'
 
-	const maskTelefone = new Mask(document.querySelector('#telefone'))
+const maskTelefone = new Mask(document.querySelector('#telefone'))
 </script>
 ```
 
