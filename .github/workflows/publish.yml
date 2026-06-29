@@ -4,9 +4,6 @@ on:
   release:
     types: [published]
 
-env:
-  DENO_INSTALL: /usr/local
-
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -18,20 +15,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install Deno
+        uses: denoland/setup-deno@v2
+
       - name: Use Node.js 24
         uses: actions/setup-node@v4
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
 
-      - name: Install Deno
-        run: curl -fsSL https://deno.land/install.sh | sh
-
-      - name: Install dependencies
-        run: deno install
-
       - name: Test and build
-        run: npm test
+        run: deno task test
 
       - name: Publish
         run: npm publish --provenance --access public
