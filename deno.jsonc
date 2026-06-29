@@ -2,6 +2,21 @@
 	"compilerOptions": {
 		"strict": true
 	},
+	"nodeModulesDir": "auto",
+	"imports": {
+		"jsdom": "npm:jsdom@29.1.1",
+		"typescript": "npm:typescript@6.0.3",
+		"rollup": "npm:rollup@4.62.2",
+		"@rollup/plugin-commonjs": "npm:@rollup/plugin-commonjs@29.0.3"
+	},
+	"tasks": {
+		"tsc": "deno run -A npm:typescript/tsc",
+		"rollup": "deno run -A npm:rollup/rollup -c",
+		"lint": "deno lint",
+		"check": "deno fmt --check",
+		"format": "deno fmt",
+		"test": "deno task check && deno task lint && deno task tsc && deno test -A --coverage=coverage/profile test/*.spec.js && deno coverage coverage/profile --include=src/ --lcov > coverage/lcov.info && deno task rollup"
+	},
 	"lint": {
 		"include": ["src/", "test/"],
 		"rules": {
