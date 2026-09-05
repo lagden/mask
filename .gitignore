@@ -26,3 +26,4 @@ vite.config.js.timestamp-*
 # !coverage/lcov.info
 
 .claude
+.localstuff
