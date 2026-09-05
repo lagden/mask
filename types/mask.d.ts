@@ -1,8 +1,48 @@
-export default Mask;
+/**
+ * Represents a masking utility to format input based on a specified mask.
+ */
+export type MaskOptions = {
+    /**
+     * - The key event to listen for (e.g., 'input', 'keyup').
+     */
+    keyEvent?: string;
+    /**
+     * - Whether to trigger masking on the blur event.
+     */
+    triggerOnBlur?: boolean;
+    /**
+     * - Whether to trigger masking on delete events (e.g., 'deleteContentBackward', 'deleteContentForward').
+     */
+    triggerOnDelete?: boolean;
+    /**
+     * - Whether to dynamically update the mask based on the input's data-mask attribute.
+     */
+    dynamicDataMask?: boolean;
+    /**
+     * - Whether to apply masking on initialization.
+     */
+    init?: boolean;
+    /**
+     * - The mask pattern, an array of mask patterns, or a function returning the mask pattern based on the input element.
+     */
+    mask?: string | string[] | ((input: HTMLInputElement) => string);
+};
 /**
  * The Mask class provides methods for input masking and management.
  */
 declare class Mask {
+    #private;
+    opts: {
+        keyEvent: string;
+        triggerOnBlur: boolean;
+        triggerOnDelete: boolean;
+        dynamicDataMask: boolean;
+        init: boolean;
+        mask: MaskOptions['mask'];
+    };
+    events: Set<any>;
+    input: HTMLInputElement;
+    maskObserver: MutationObserver | undefined;
     /**
      * Checks if a Mask instance exists for the given input element.
      * @param {HTMLInputElement} input - The input element to check.
@@ -25,6 +65,11 @@ declare class Mask {
      */
     static masking(_value: string, _mask: string): string;
     /**
+     * The current mask pattern applied to the input.
+     * @type {string|undefined}
+     */
+    mask: string | undefined;
+    /**
      * Constructs a new Mask instance for the given input element.
      *
      * @param {HTMLInputElement} input - The input element to apply the mask to.
@@ -33,48 +78,7 @@ declare class Mask {
      * @throws {TypeError} If the input has already been instanced.
      * @throws {Error} If the mask is empty.
      */
-    constructor(input: HTMLInputElement, opts?: {
-        /**
-         * - The key event to listen for (e.g., 'input', 'keyup').
-         */
-        keyEvent?: string | undefined;
-        /**
-         * - Whether to trigger masking on the blur event.
-         */
-        triggerOnBlur?: boolean | undefined;
-        /**
-         * - Whether to trigger masking on delete events (e.g., 'deleteContentBackward', 'deleteContentForward').
-         */
-        triggerOnDelete?: boolean | undefined;
-        /**
-         * - Whether to dynamically update the mask based on the input's data-mask attribute.
-         */
-        dynamicDataMask?: boolean | undefined;
-        /**
-         * - Whether to apply masking on initialization.
-         */
-        init?: boolean | undefined;
-        /**
-         * - The mask pattern, an array of mask patterns, or a function returning the mask pattern based on the input element.
-         */
-        mask?: string | string[] | ((input: HTMLInputElement) => string) | undefined;
-    });
-    /**
-     * The current mask pattern applied to the input.
-     * @type {string|undefined}
-     */
-    mask: string | undefined;
-    opts: {
-        keyEvent: string;
-        triggerOnBlur: boolean;
-        triggerOnDelete: boolean;
-        dynamicDataMask: boolean;
-        init: boolean;
-        mask: string | string[] | ((input: HTMLInputElement) => string) | undefined;
-    };
-    events: Set<any>;
-    input: HTMLInputElement;
-    maskObserver: MutationObserver | undefined;
+    constructor(input: HTMLInputElement, opts?: MaskOptions);
     /**
      * Get the unmasked input value (removes non-digit and non-alphabetic characters).
      * @returns {string} The unmasked input value.
@@ -91,5 +95,5 @@ declare class Mask {
      * Destroys the Mask instance, removing event listeners and cleaning up references.
      */
     destroy(): void;
-    #private;
 }
+export default Mask;

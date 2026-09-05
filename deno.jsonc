@@ -4,9 +4,9 @@
 	},
 	"nodeModulesDir": "auto",
 	"imports": {
-		"jsdom": "npm:jsdom@29.1.1",
-		"typescript": "npm:typescript@6.0.3",
-		"rollup": "npm:rollup@4.62.2",
+		"jsdom": "npm:jsdom@30.0.1",
+		"typescript": "npm:typescript@7.0.2",
+		"rollup": "npm:rollup@4.63.1",
 		"@rollup/plugin-commonjs": "npm:@rollup/plugin-commonjs@29.0.3"
 	},
 	"tasks": {
