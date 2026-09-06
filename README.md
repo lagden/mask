@@ -21,7 +21,7 @@ The simple and tiny script for input mask.
 | cleave.js                                                           | ~6.1 kB         | 0            | Community types via `@types/cleave.js` (unmaintained) |
 | vanilla-masker                                                      | ~1.5 kB         | 0            | No types available (unmaintained)                     |
 
-> [!INFO]\
+> [!NOTE]\
 > Figures from [bundlephobia.com](https://bundlephobia.com) at the time of writing\
 > they may drift as packages are updated.
 
