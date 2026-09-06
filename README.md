@@ -14,14 +14,16 @@ The simple and tiny script for input mask.
 
 ## Comparison
 
-| Library           | Size (min+gzip) | Dependencies | TypeScript                                            |
-| ----------------- | --------------- | ------------ | ----------------------------------------------------- |
-| **@tadashi/mask** | **~1.2 kB**     | **0**        | Types generated from JSDoc, shipped in the package    |
-| imask             | ~15.7 kB        | 1            | Written natively in TypeScript                        |
-| cleave.js         | ~6.1 kB         | 0            | Community types via `@types/cleave.js` (unmaintained) |
-| vanilla-masker    | ~1.5 kB         | 0            | No types available (unmaintained)                     |
+| Library                                                             | Size (min+gzip) | Dependencies | TypeScript                                            |
+| ------------------------------------------------------------------- | --------------- | ------------ | ----------------------------------------------------- |
+| [**@tadashi/mask**](https://bundlephobia.com/package/@tadashi/mask) | **~1.2 kB**     | **0**        | Types generated from JSDoc, shipped in the package    |
+| imask                                                               | ~15.7 kB        | 1            | Written natively in TypeScript                        |
+| cleave.js                                                           | ~6.1 kB         | 0            | Community types via `@types/cleave.js` (unmaintained) |
+| vanilla-masker                                                      | ~1.5 kB         | 0            | No types available (unmaintained)                     |
 
-Figures from [bundlephobia.com](https://bundlephobia.com) at the time of writing — they may drift as packages are updated.
+> [!INFO]\
+> Figures from [bundlephobia.com](https://bundlephobia.com) at the time of writing\
+> they may drift as packages are updated.
 
 ## Install
 
