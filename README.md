@@ -1,6 +1,7 @@
 # Mask
 
-[![NPM version][npm-img]][npm] [![Build Status][ci-img]][ci] [![Coverage Status][coveralls-img]][coveralls]
+[![NPM version][npm-img]][npm] [![Build Status][ci-img]][ci] [![Coverage Status][coveralls-img]][coveralls] [![Bundle size][bundlephobia-img]][bundlephobia]
+[![Downloads][downloads-img]][npm]
 
 [npm-img]: https://img.shields.io/npm/v/@tadashi/mask.svg
 [npm]: https://www.npmjs.com/package/@tadashi/mask
@@ -8,6 +9,9 @@
 [ci]: https://github.com/lagden/mask/actions/workflows/ci.yml
 [coveralls-img]: https://coveralls.io/repos/github/lagden/mask/badge.svg?branch=main
 [coveralls]: https://coveralls.io/github/lagden/mask?branch=main
+[bundlephobia-img]: https://img.shields.io/bundlephobia/minzip/@tadashi/mask.svg
+[bundlephobia]: https://bundlephobia.com/package/@tadashi/mask
+[downloads-img]: https://img.shields.io/npm/dm/@tadashi/mask.svg
 
 The simple and tiny script for input mask.
 

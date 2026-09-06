@@ -5,7 +5,16 @@
 	"keywords": [
 		"mask",
 		"input",
-		"tiny"
+		"tiny",
+		"input-mask",
+		"typescript",
+		"vanilla-js",
+		"form",
+		"cpf",
+		"cnpj",
+		"phone-mask",
+		"zero-dependencies",
+		"esm"
 	],
 	"bug": {
 		"url": "https://github.com/lagden/mask",
