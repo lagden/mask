@@ -1,7 +1,6 @@
 # Mask
 
-[![NPM version][npm-img]][npm] [![Build Status][ci-img]][ci] [![Coverage Status][coveralls-img]][coveralls]
-[![Downloads][downloads-img]][npm]
+[![NPM version][npm-img]][npm] [![Build Status][ci-img]][ci] [![Coverage Status][coveralls-img]][coveralls] [![Downloads][downloads-img]][npm]
 
 [npm-img]: https://img.shields.io/npm/v/@tadashi/mask.svg
 [npm]: https://www.npmjs.com/package/@tadashi/mask
